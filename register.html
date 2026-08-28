@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ignite '26 — Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&amp;family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  --sand:#FAF6EE; --sun:#E8BE5C; --coral:#A9741F; --leaf:#C8912E; --leaf-deep:#5C3D0B; --ink:#2B2118;
+  --card:#FFFFFF;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Poppins',sans-serif; color:var(--ink);
+  background-color:var(--sand);
+  background-image:var(--bg-image, none);
+  background-size:cover; background-position:center top; background-attachment:scroll;
+  min-height:100vh;
+}
+body.bg-fixed{background-attachment:fixed;}
+.veil{min-height:100vh; padding-bottom:80px;
+  background:linear-gradient(180deg, rgba(250,246,238,0.20) 0%, rgba(250,246,238,0.42) 100%);}
+
+/* ---------- header ---------- */
+.hero{max-width:820px; margin:26px auto 0; padding:0 16px;}
+.hero img{width:100%; border-radius:20px 20px 0 0; display:block; box-shadow:0 12px 34px rgba(43,33,24,.28);}
+.hero-bar{background:#fff; color:var(--ink);
+  border-radius:0 0 20px 20px; padding:18px 28px 20px; box-shadow:0 12px 34px rgba(43,33,24,.20);}
+.hero-bar h1{font-family:'Baloo 2',cursive; font-size:clamp(24px,4vw,34px); line-height:1.1; color:#B07C22;}
+@supports (-webkit-background-clip:text){
+  .hero-bar h1{background:linear-gradient(115deg,#8A5A1B,#C8912E 45%,#EFC468);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;}
+}
+.hero-bar p{font-size:14px; margin-top:4px; color:#A98A4E;}
+
+/* ---------- sections & questions ---------- */
+.wrap{max-width:820px; margin:0 auto; padding:0 16px;}
+.section{background:var(--card); border-radius:18px; margin-top:26px;
+  box-shadow:0 8px 26px rgba(43,33,24,.16); overflow:hidden;}
+.section-head{background:linear-gradient(90deg,var(--sun),var(--coral)); padding:16px 26px; position:relative; overflow:hidden;}
+.section-head::after{content:""; position:absolute; right:16px; top:50%; width:56px; height:56px;
+  transform:translateY(-50%) rotate(-14deg); opacity:.30; pointer-events:none;
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='none' stroke='%23FFFFFF' stroke-width='1.6'/><path fill='%23FFFFFF' d='M12 8.2l3.6 2.6-1.4 4.2h-4.4l-1.4-4.2z'/><g stroke='%23FFFFFF' stroke-width='1.4' stroke-linecap='round'><line x1='12' y1='8.2' x2='12' y2='2.6'/><line x1='15.6' y1='10.8' x2='20.9' y2='9.1'/><line x1='14.2' y1='15' x2='17.5' y2='19.4'/><line x1='9.8' y1='15' x2='6.5' y2='19.4'/><line x1='8.4' y1='10.8' x2='3.1' y2='9.1'/></g></svg>") center/contain no-repeat;}
+.section-head h2{font-family:'Baloo 2',cursive; font-size:22px; color:var(--ink);}
+.section-head p{font-size:13px; color:rgba(43,33,24,.75); margin-top:2px;}
+.section-body{padding:10px 26px 24px;}
+.edit-mode [contenteditable="true"]{outline:1px dashed rgba(169,116,31,.6); border-radius:6px; padding:2px 6px; background:rgba(232,190,92,.09); cursor:text;}
+
+.q{padding:18px 0 6px; border-bottom:1px solid rgba(43,33,24,.08); position:relative;}
+.q:last-child{border-bottom:none;}
+.q-label{font-weight:600; font-size:15px; margin-bottom:10px; display:block;}
+.q-label .req{color:var(--coral);}
+input[type=text],input[type=email],input[type=tel],textarea,select.dd-live{
+  width:100%; padding:12px 14px; font-family:'Poppins',sans-serif; font-size:14px;
+  border:1.6px solid rgba(43,33,24,.18); border-radius:12px; background:#fff;
+  transition:border-color .15s, box-shadow .15s;}
+input:focus,textarea:focus,select.dd-live:focus{outline:none; border-color:var(--leaf); box-shadow:0 0 0 3px rgba(200,145,46,.18);}
+textarea{min-height:96px; resize:vertical;}
+select.dd-live{max-width:340px; cursor:pointer;}
+select.country-picker{max-width:340px; cursor:pointer; width:100%; padding:12px 14px; font-family:'Poppins',sans-serif; font-size:14px;
+  border:1.6px solid rgba(43,33,24,.18); border-radius:12px; background:#fff;}
+select.country-picker:focus{outline:none; border-color:var(--leaf); box-shadow:0 0 0 3px rgba(200,145,46,.18);}
+.country-hint{display:block; font-size:12px; color:rgba(43,33,24,.55); margin-top:6px;}
+
+.choices{margin-top:2px;}
+.choices .opt{display:flex; align-items:center; gap:10px; padding:8px 2px; font-size:14px;}
+.choices input[type=radio],.choices input[type=checkbox]{accent-color:var(--coral); width:18px; height:18px; flex:none; cursor:pointer;}
+.choice-text{font-size:14px;}
+.err{color:#C5391F; font-size:12px; margin-top:8px; display:none;}
+.q.invalid .err{display:block;}
+.q.invalid input,.q.invalid textarea,.q.invalid select.dd-live{border-color:#C5391F;}
+
+
+/* ---------- file upload ---------- */
+.file-box{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+.file-pick{display:inline-flex; align-items:center; gap:8px; cursor:pointer;
+  background:#fff; border:1.6px dashed rgba(43,33,24,.3); border-radius:12px;
+  padding:11px 18px; font-size:14px; font-weight:600; color:var(--leaf-deep);
+  transition:border-color .15s, background .15s;}
+.file-pick:hover{border-color:var(--coral); background:#FBF3E0;}
+.file-pick input[type=file]{display:none;}
+.file-name{font-size:13px; color:rgba(43,33,24,.65);}
+.file-prev{margin-top:12px; max-width:240px; max-height:160px; border-radius:12px;
+  box-shadow:0 3px 12px rgba(43,33,24,.2); display:block;}
+.q.invalid .file-pick{border-color:#C5391F;}
+
+.country-combo{position:relative;}
+.country-combo-btn{width:100%; display:flex; align-items:center; gap:10px; padding:12px 14px;
+  border:1.6px solid rgba(43,33,24,.18); border-radius:12px; background:#fff; cursor:pointer;
+  font-family:'Poppins',sans-serif; font-size:14px; text-align:left; color:var(--ink);}
+.country-combo-btn:focus{outline:none; border-color:var(--leaf); box-shadow:0 0 0 3px rgba(200,145,46,.18);}
+.country-combo-btn.open{border-color:var(--leaf);}
+.cc-flag{width:22px; height:16px; border-radius:2px; object-fit:cover; flex:none; box-shadow:0 0 0 1px rgba(43,33,24,.12); display:none;}
+.cc-flag.shown{display:block;}
+.cc-label{flex:1; color:rgba(43,33,24,.45);}
+.cc-label.filled{color:var(--ink);}
+.cc-caret{opacity:.5; font-size:11px; flex:none;}
+.country-combo-panel{position:fixed; z-index:80; background:#fff; border:1.6px solid rgba(43,33,24,.18);
+  border-radius:12px; box-shadow:0 14px 34px rgba(43,33,24,.25); max-height:280px; display:flex; flex-direction:column; overflow:hidden;}
+.country-combo-panel[hidden]{display:none;}
+.country-search{border:none; border-bottom:1px solid rgba(43,33,24,.12); padding:11px 14px; font-size:14px;
+  font-family:'Poppins',sans-serif; flex:0 0 auto;}
+.country-search:focus{outline:none;}
+.country-list{list-style:none; margin:0; padding:6px 0; overflow-y:auto; flex:1 1 auto; min-height:0; -webkit-overflow-scrolling:touch;}
+.country-list li{display:flex; align-items:center; gap:10px; padding:9px 14px; cursor:pointer; font-size:14px;}
+.country-list li img{width:22px; height:16px; border-radius:2px; object-fit:cover; flex:none; box-shadow:0 0 0 1px rgba(43,33,24,.1);}
+.country-list li:hover,.country-list li.hi{background:var(--sand);}
+.country-list li.no-match{color:rgba(43,33,24,.5); cursor:default;}
+.country-list li.no-match:hover{background:none;}
+
+.phone-field{position:relative;}
+.phone-flag{position:absolute; left:12px; top:50%; transform:translateY(-50%); width:20px; height:15px;
+  border-radius:2px; object-fit:cover; box-shadow:0 0 0 1px rgba(43,33,24,.12); display:none; pointer-events:none;}
+.phone-flag.shown{display:block;}
+.phone-field input[data-role="phone-number"].has-flag{padding-left:44px;}
+/* ---------- pages & nav ---------- */
+.page{display:none;}
+.page.active{display:block;}
+.nav-row{display:flex; justify-content:space-between; align-items:center; margin-top:26px; gap:12px; flex-wrap:wrap;}
+.nav-left{display:flex; gap:10px;}
+.btn{font-family:'Baloo 2',cursive; font-weight:700; font-size:17px;
+  border:none; border-radius:40px; padding:13px 38px; cursor:pointer;
+  background:linear-gradient(90deg,var(--sun),var(--coral)); color:var(--leaf-deep);
+  box-shadow:0 6px 18px rgba(169,116,31,.35); transition:transform .12s;}
+.btn:hover{transform:translateY(-2px);}
+.ball-ico{width:19px; height:19px; vertical-align:-4px; margin-left:2px;}
+.btn.ghost{background:#fff; color:var(--leaf-deep); box-shadow:0 3px 10px rgba(0,0,0,.14); font-size:15px; padding:11px 26px;}
+.clear-link{background:none; border:none; color:var(--leaf-deep); font-size:14px; font-weight:600; cursor:pointer; font-family:'Poppins',sans-serif; padding:8px; text-decoration:underline;}
+.progress{font-size:12px; color:rgba(43,33,24,.6); margin-top:14px;}
+
+/* ---------- edit tools ---------- */
+.q-tools{display:none; position:absolute; top:10px; right:0; gap:6px;}
+.edit-mode .q-tools{display:flex;}
+.q-tools button,.sec-tools button,.opt-del,.opt-goto,.dd-editor .txt{
+  border:none; background:var(--sand); color:var(--ink); font-size:12px; padding:5px 9px;
+  border-radius:8px; cursor:pointer; font-family:'Poppins',sans-serif; box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.q-tools button:hover,.sec-tools button:hover{background:var(--sun);}
+.opt-del{display:none; color:#C5391F; font-size:14px; padding:3px 8px;}
+.edit-mode .opt-del{display:inline-block;}
+.opt-goto{display:none; font-size:11.5px; color:rgba(43,33,24,.7); max-width:180px; cursor:pointer;}
+.edit-mode .opt-goto{display:inline-block;}
+.sec-tools{display:none; flex-wrap:wrap; gap:8px; padding:14px 26px 20px;}
+.edit-mode .sec-tools{display:flex;}
+.sec-next{display:none; align-items:center; gap:8px; padding:0 26px 14px; font-size:13px; color:rgba(43,33,24,.7);}
+.edit-mode .sec-next{display:flex;}
+.page-next-sel{border:none; background:var(--sand); border-radius:8px; padding:5px 9px; font-family:'Poppins',sans-serif; font-size:12px; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,.12);}
+.dd-editor{display:none; margin-top:10px;}
+.edit-mode .dd-editor{display:block;}
+.edit-mode select.dd-live{display:none;}
+.dd-editor .opt-row{display:flex; align-items:center; gap:8px; padding:5px 0;}
+.dd-editor .txt{cursor:text; box-shadow:none; border-bottom:1px dashed rgba(43,33,24,.3); border-radius:0; background:transparent; flex:0 0 190px; font-size:14px;}
+.add-opt-btn{border:none; background:none; color:var(--coral); font-size:13px; cursor:pointer; font-family:'Poppins',sans-serif; padding:6px 0; font-weight:600;}
+
+.txt-branch{display:none; align-items:center; gap:8px; margin-top:10px; font-size:12.5px; color:rgba(43,33,24,.7); flex-wrap:wrap;}
+.edit-mode .txt-branch{display:flex;}
+.txt-branch .txt{cursor:text; box-shadow:none; border:none; border-bottom:1px dashed rgba(43,33,24,.3); border-radius:0; background:transparent; font-size:13px; padding:4px 2px; width:120px; font-family:'Poppins',sans-serif;}
+/* ---------- editor panel ---------- */
+.panel{position:fixed; top:14px; right:14px; z-index:50;
+  background:#fff; color:var(--ink); border:1px solid rgba(169,116,31,.30); border-radius:16px; padding:14px 16px;
+  box-shadow:0 10px 30px rgba(43,33,24,.22); width:250px; font-size:13px;}
+.panel h3{font-family:'Baloo 2',cursive; font-size:16px; margin-bottom:8px; color:#A9741F;}
+.panel .row{display:flex; flex-direction:column; gap:6px; margin-bottom:10px;}
+.panel button,.panel label.filebtn{background:var(--sand); border:1px solid rgba(169,116,31,.35); color:var(--ink);
+  border-radius:10px; padding:8px 10px; cursor:pointer; font-family:'Poppins',sans-serif; font-size:12.5px; text-align:center;}
+.panel button:hover,.panel label.filebtn:hover{background:#F3E3BC;}
+.panel button.active{background:var(--coral); border-color:var(--coral); color:#fff;}
+.panel input[type=file]{display:none;}
+.panel input[type=url]{border:1px solid rgba(43,33,24,.18); background:#fff; color:var(--ink); border-radius:8px; padding:7px 9px; font-size:11.5px; font-family:'Poppins',sans-serif; width:100%;}
+.panel .mini{font-size:10.5px; opacity:.7; line-height:1.4;}
+.panel-toggle{position:fixed; top:14px; right:14px; z-index:60; background:var(--coral); color:#fff; border:none; border-radius:50%;
+  width:44px; height:44px; font-size:20px; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,.3); display:none;}
+.panel.hidden{display:none;}
+.panel-toggle.show{display:block;}
+.toast{position:fixed; bottom:22px; left:50%; transform:translateX(-50%); background:#fff; color:var(--ink); border:1px solid rgba(169,116,31,.45); box-shadow:0 8px 24px rgba(43,33,24,.25); padding:11px 22px; border-radius:10px; font-size:13.5px; z-index:70; display:none;}
+
+#thanksPage{display:none;}
+#thanksPage .section{text-align:center; padding:56px 30px;}
+#thanksPage h2{font-family:'Baloo 2',cursive; font-size:32px; color:var(--leaf-deep);}
+#thanksPage p{margin-top:10px; color:rgba(43,33,24,.75);}
+@media(max-width:640px){
+  .panel{width:210px;}
+  .section-body,.section-head,.sec-tools{padding-left:18px; padding-right:18px;}
+  /* 16px stops iOS Safari from auto-zooming into fields */
+  input[type=text],input[type=email],input[type=tel],textarea,select.dd-live{font-size:16px;}
+  .choices input[type=radio],.choices input[type=checkbox]{width:22px;height:22px;}
+  .choices .opt{padding:11px 2px;}
+  .btn{width:100%;}
+  .nav-left{width:100%;flex-direction:column-reverse;}
+  .nav-row{flex-direction:column;align-items:stretch;}
+  .clear-link{align-self:center;}
+  .hero{margin-top:14px;}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;} .btn:hover{transform:none;}}
+</style>
+</head>
+<body class="bg-fixed" style="--bg-image: url(&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA4MDAgMTEwMCc+CjxyZWN0IHdpZHRoPSc4MDAnIGhlaWdodD0nMTEwMCcgZmlsbD0nI0ZERkJGNicvPgo8ZyBmaWxsPSdub25lJyBzdHJva2U9JyNDODkxMkUnIHN0cm9rZS13aWR0aD0nMycgb3BhY2l0eT0nMC4zMCc+CjxyZWN0IHg9JzYwJyB5PSc2MCcgd2lkdGg9JzY4MCcgaGVpZ2h0PSc5ODAnLz4KPGxpbmUgeDE9JzYwJyB5MT0nNTUwJyB4Mj0nNzQwJyB5Mj0nNTUwJy8+CjxjaXJjbGUgY3g9JzQwMCcgY3k9JzU1MCcgcj0nMTEwJy8+CjxyZWN0IHg9JzIxNScgeT0nNjAnIHdpZHRoPSczNzAnIGhlaWdodD0nMTYwJy8+CjxyZWN0IHg9JzMwNScgeT0nNjAnIHdpZHRoPScxOTAnIGhlaWdodD0nNjUnLz4KPHBhdGggZD0nTTMxNywyMjAgQTExMCwxMTAgMCAwIDAgNDgzLDIyMCcvPgo8cmVjdCB4PScyMTUnIHk9Jzg4MCcgd2lkdGg9JzM3MCcgaGVpZ2h0PScxNjAnLz4KPHJlY3QgeD0nMzA1JyB5PSc5NzUnIHdpZHRoPScxOTAnIGhlaWdodD0nNjUnLz4KPHBhdGggZD0nTTMxNyw4ODAgQTExMCwxMTAgMCAwIDEgNDgzLDg4MCcvPgo8L2c+CjxnIGZpbGw9JyNDODkxMkUnIG9wYWNpdHk9JzAuMzAnPgo8Y2lyY2xlIGN4PSc0MDAnIGN5PSc1NTAnIHI9JzUnLz48Y2lyY2xlIGN4PSc0MDAnIGN5PScxNzAnIHI9JzQnLz48Y2lyY2xlIGN4PSc0MDAnIGN5PSc5MzAnIHI9JzQnLz4KPC9nPgo8L3N2Zz4=&quot;);" data-sheet-url="https://script.google.com/macros/s/AKfycbyUinOGFeuO4tuxC1Bi000iLGySq6QgEjhVWLeEjMzdGM8pouV3tnF4Wph13Utsyk7O/exec">
+
+<button class="panel-toggle" id="panelToggle" title="Open editor">✎</button>
+<aside class="panel" id="panel">
+  <h3>Form editor</h3>
+  <div class="row">
+    <button id="editToggle" class="">✏️ Edit mode: OFF</button>
+    <span class="mini">Click text to retype it. × deletes an option. "→" next to an option routes it to a page. Each page footer sets its default next page.</span>
+  </div>
+  <div class="row">
+    <label class="filebtn">🖼 Change background<input type="file" id="bgUpload" accept="image/*"></label>
+    <label class="filebtn">🏞 Change header photo<input type="file" id="headerUpload" accept="image/*"></label>
+    <button id="bgClear">Plain background (no photo)</button>
+    <button id="bgMode">Background: scrolls with page</button>
+  </div>
+  <div class="row">
+    <span style="font-size:12px;">Google Sheet web app URL</span>
+    <input type="url" id="sheetUrl" placeholder="https://script.google.com/macros/s/.../exec">
+    <span class="mini">Paste your Apps Script URL — answers land in your Sheet on Submit (setup guide in chat).</span>
+  </div>
+  <div class="row">
+    <button id="saveHtml">💾 Download editor copy (for you)</button>
+    <button id="savePublic">⚽ Download public version (register.html)</button>
+    <span class="mini">Upload ONLY the public version — it has no editing tools. Keep the editor copy to make future changes.</span>
+  </div>
+  <div class="row"><button id="hidePanel">Hide panel</button></div>
+</aside>
+<div class="toast" id="toast" style="display: none;">register.html downloaded — upload it next to index.html on your host</div>
+
+<div class="veil">
+
+  <header class="hero">
+    <img id="headerImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNjAwIDQ4MCc+CjxyZWN0IHdpZHRoPScxNjAwJyBoZWlnaHQ9JzQ4MCcgZmlsbD0nI0ZGRkZGRicvPgo8ZyBzdHJva2U9JyNDODkxMkUnIGZpbGw9J25vbmUnIHN0cm9rZS13aWR0aD0nMycgb3BhY2l0eT0nMC4yMCc+CjxsaW5lIHgxPSc4MDAnIHkxPScwJyB4Mj0nODAwJyB5Mj0nNDgwJy8+CjxjaXJjbGUgY3g9JzgwMCcgY3k9JzI0MCcgcj0nMTk1Jy8+CjxsaW5lIHgxPScwJyB5MT0nNDUyJyB4Mj0nMTYwMCcgeTI9JzQ1MicvPgo8L2c+CjxnIHN0cm9rZT0nI0M4OTEyRScgc3Ryb2tlLXdpZHRoPSczLjUnIG9wYWNpdHk9JzAuNTUnPgo8Y2lyY2xlIGN4PScyMzAnIGN5PScyNDAnIHI9JzYyJyBmaWxsPSdub25lJy8+PHBvbHlnb24gcG9pbnRzPScyMzAuMCwyMjEuNCAyNDcuNywyMzQuMyAyNDAuOSwyNTUuMCAyMTkuMSwyNTUuMCAyMTIuMywyMzQuMycgZmlsbD0nI0M4OTEyRScvPjxsaW5lIHgxPScyMzAuMCcgeTE9JzIyMS40JyB4Mj0nMjMwLjAnIHkyPScxODMuMCcvPjxsaW5lIHgxPScyNDcuNycgeTE9JzIzNC4zJyB4Mj0nMjg0LjInIHkyPScyMjIuNCcvPjxsaW5lIHgxPScyNDAuOScgeTE9JzI1NS4wJyB4Mj0nMjYzLjUnIHkyPScyODYuMScvPjxsaW5lIHgxPScyMTkuMScgeTE9JzI1NS4wJyB4Mj0nMTk2LjUnIHkyPScyODYuMScvPjxsaW5lIHgxPScyMTIuMycgeTE9JzIzNC4zJyB4Mj0nMTc1LjgnIHkyPScyMjIuNCcvPgo8Y2lyY2xlIGN4PScxMzcwJyBjeT0nMjQwJyByPSc2MicgZmlsbD0nbm9uZScvPjxwb2x5Z29uIHBvaW50cz0nMTM3MC4wLDIyMS40IDEzODcuNywyMzQuMyAxMzgwLjksMjU1LjAgMTM1OS4xLDI1NS4wIDEzNTIuMywyMzQuMycgZmlsbD0nI0M4OTEyRScvPjxsaW5lIHgxPScxMzcwLjAnIHkxPScyMjEuNCcgeDI9JzEzNzAuMCcgeTI9JzE4My4wJy8+PGxpbmUgeDE9JzEzODcuNycgeTE9JzIzNC4zJyB4Mj0nMTQyNC4yJyB5Mj0nMjIyLjQnLz48bGluZSB4MT0nMTM4MC45JyB5MT0nMjU1LjAnIHgyPScxNDAzLjUnIHkyPScyODYuMScvPjxsaW5lIHgxPScxMzU5LjEnIHkxPScyNTUuMCcgeDI9JzEzMzYuNScgeTI9JzI4Ni4xJy8+PGxpbmUgeDE9JzEzNTIuMycgeTE9JzIzNC4zJyB4Mj0nMTMxNS44JyB5Mj0nMjIyLjQnLz4KPC9nPgo8aW1hZ2UgaHJlZj0nZGF0YTppbWFnZS9qcGVnO2Jhc2U2NCwvOWovNEFBUVNrWkpSZ0FCQVFBQUFRQUJBQUQvMndCREFBUURBd1FEQXdRRUF3UUZCQVFGQmdvSEJnWUdCZzBKQ2dnS0R3MFFFQThORHc0UkV4Z1VFUklYRWc0UEZSd1ZGeGtaR3hzYkVCUWRIeDBhSHhnYUd4ci8yd0JEQVFRRkJRWUZCZ3dIQnd3YUVROFJHaG9hR2hvYUdob2FHaG9hR2hvYUdob2FHaG9hR2hvYUdob2FHaG9hR2hvYUdob2FHaG9hR2hvYUdob2FHaG9hR2hyL3dBQVJDQUY5QWdnREFTSUFBaEVCQXhFQi84UUFIUUFCQUFJQ0F3RUJBQUFBQUFBQUFBQUFBQVVHQVFRQ0F3Y0lDZi9FQUV3UUFBSUNBUUlEQXdnR0JnWUhDUUVCQUFBQkFnTUVCUkVHRWpFVElVRUhGVkZoY1lHUmtpSXlRbEpVb1FnVUZySEIwU016VTJKeWt4ZEZZNkxTNGZGRFJGV0NnNFNVc3NJa0pmL0VBQnNCQVFBQ0F3RUJBQUFBQUFBQUFBQUFBQUFFQlFFQ0F3WUgvOFFBTHhFQUFnSUJBd1FDQVFJR0FnTUFBQUFBQUFFQ0F4RUVFaUVGRXpGUkZFRmhJcEVWTWtKeGdhRWpVZ2F4d2YvYUFBd0RBUUFDRVFNUkFEOEErL2dBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQURETW1IMEFOYkYxREd6ZTJXTGJHeDBXT3ExTHJDYTZwcndObzhLNDE0ankvSjE1VW5xZVB6V2FkcWVMVlBOeDEwbW90d2NsL2VTU2FmajBQYk1IT28xSERveThLeU4yUGZCV1Z6ajBsRnJkTWkwM3hzbEtIM0U3V1ZPQ1V2cG15QUNVY1FBQUFBQUFBQUFBQUFBQUFnQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBREQ2QUhnZmw4clV0ZTBacjYzNm5adjg2Mi9pUy9rRzRrbGZoWjNEMlZOdVdFMWZpNy8yVW45SmU2WC9BTml2K1dYSy9YZU1sUkh2V0hoVndmcWxPVGwrN1lnZkpwbVMwcmo3UjdFOW81TTU0czE2Vk9MMi93QjZLUEpQVWR2cWJhOE40TDN0YnRFbC9rK29McjZzYXFkMlJPTlZVRnZLY25za3ZTem1wSnBOTk5Qb1JmRXNJVzhPYXRDMUp3bGhYS1cvbzVHZWRlUTdqU3pYTkU4eTZwYTdNL1RxNDlsT1Q3N2FIM1JiOUxqOVYrNDlMSzZNTFkxdjdLZFZ1VUhOZlI2MEFDUWNnQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBY0xKeHJoS2Myb3dpbTIzMFNPWjU5NVZkZGxoNkxIUnNHemt6dFgzcWJqMXJvWDliUDRQbFhya2NMN1kwVnV5WDBiMXdkazFGZlo0enF1YzlmMVhVdFhlN2puWk1ySzkvN0pmUmgvdXBQM25SbzFicTRqME9jUHJSMUhIMitkRW5QRmpYQ01LNHFNSXJhTVY0SmVCblFNUjM4V2NQVXBidWVvMXkyOVVFNXY4QStwODdwbks3VXhsOXQvOEEwOVROS0ZUUzhKSHVQbEYxRmFYd1BydVEzcy8xU2RjUFhLZjBVdnpQbTNnbldKY0xjVjZUbjgzTFRHMk5GL29kVTlvdjRkejl4Nm41YmVJSTVNOEhoekZrcE5TV1ptN2ZaaXQremcvYkx2MjlFVHhyTHh1MHFzaDBjb3RKK3Z3WmVkUzFPTlZIYi9UL0FPeURvNmYrQjd2Nmo3TVRNa0h3ZnFUMWpoYlJzK1Qzbms0VlU1ZjRuRmIvQUprMmoxc1pib3AreWlhdzhHUUFiR0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBY1c5Z0RXMUxVY2JTY0hJemRRdGpSaTQ5YnN0c2wwakZMZHM4TnR5OGppTFB5ZGN6NFNydHlrbzBVUzY0OUMrcEQvRS9yUzliMjhDVThvdkZDMS9WWG8ySFBtMHZBc1R5cEo5MTk2NzFEMXhoMWY5N3U4Q0dweVBXZUg2MXJ1N0xzMXZoZWY3bC9vZFBzWGNsNVowM1VtanBXdVVhQnhUSExsQlpPWGhZVTVZdU1uMzJYMnZsanY2SXhncE55OEUvUzBUazRLeU82NmtVOU9wcHZ2dnJyU3V2YWRsajZ2YnVTMzlDOUJSYWU1MHpVMTVSWXpnckk3V1FsOEw4aTdJeTlRdWVSblpOanR5TFg5cWI5SG9TWGNsNEpHaGRSM3IybGd2cFVVM0x1WGlSZWZ0alk5MTBsM1ZRbE4rNWJteW5LY3N2eWJZVVZoSHZQa21iLzBlYUJ2K0dhWHM1NWJma1hRcjNBMm5TMGpnN1FzS3hiV1U0TlNtdjczS20vemJMQ2ZUYUU0MVJUOUk4aE41bTJBQWRqUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVBvVUx5bjhZeTRjMG1PSHA5aWhxbWZ2Q3ByclZEN1ZudTZMMXYxRjR5c2l2RXg3YjhpYWhWVkJ6bkorQ1MzYlBrL2lQaWEzaWZpSEwxTzV0UXRseTBRZjJLbDlWZnhmcmJLanFlcitOVGlQOHpKK2pvNzFtWDRSdVlrNDAxeHJyN29wZDNmOEFtU2xGL1R2SzFUZjA3eVJvdjZIZ1pMSjZVc3RGL2V1ODJwUmpaSGRkU0JyeVl3aTVUa294aXQyMjlra1d2aGZnL000dVZkK2QybUZvUFZ2dmpibUw3c2Z1MXZ4bDFmaDNkNXRScExOVFlvVm81VzJ3cGp1a3luYXJpWkdwWWRHVlROMGFaK3ZWMFZXTHJsMkp0eVVmN2tWRjd2eGZjdWpOM0IwWjhRNjdwdWtRanZESnVWbVJ0OW1pRFVwdCszWlIvd0RNVHZsQzFqRW5yOVdEaVJqVnAyZ1ZkakN1cVBkTEpzU1hKQ0s2dU1ObHQ2WjdGNThuUENWMmk0dDJwNnZXb2F0bnBiMTlmMWVsZlZxMzlQakwxdjFJdktOQXA2dnR4NWpEeS95UUxOUzQwYm41Zmd2U2pza2wzSkdVQWUzUFBnQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBd3pJQVBOL0xYcnZtamd1Nml1WExibjJLaGJQN1BXWDVMYjNuelJSZDBQV1Awa05TZm5EUk1CUytqR3F5NXIxdHBmL2s4WG90MjI3enhIVlp1elV0UDY0UFNhR0NqU243TEpSZjZ5UnB1YmNZd2pLYzVTVVl4Z3Q1U2I2SkpkV1Y3RmxPMmNLNm95bk9iU2pHSzNiZm9SOUkrVFR5Y1E0ZXByMVBXcTQyYXZPUDBJdnZXTW40TCs5Nlg3a1JOSm81NnVlMlBDKzJkcjlSRFR4eS9Qb2orRFBKZEtUcDFIaTZLbTR0VHAwL2ZlTVg0T3o3ei91OUY2ejBEaUxPemRPMHl6ekxoeXpkUnNUcnhxbzkwVlBidWNwZEl4WFYvQW1VdGhzZTJwMHRlbnIyVnJCNXV5NmRzOTB6empnYnlYeDBLMnZVK0k4bGFwcktsS3lQZC9SVXprOTVTaW45YWIzZTgzMytDMlI2T3U1QkxZeWRxcVlVeDJ3V0RTYzVXUE1nQURzYUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBNk15N3NNYTJ6Zlp4aTl2YVlid3NqeWQ0S1o1eHkvd0FSWjhSNXh5L3hGbnhJdnlZK2p0Mm43TG51Q21lY01yOFJaOHhadEtka3NLcVYwNVRsTGQ3czZRdVZqd2thU2c0bTZBWWIyTzVvWkc1RDV1dTEwdHd4bzlyTmRYOWxmekllN1ZjdTc2MXppdlJIdUk4cjR4ZURvcTVNdCs2OUk1bDZWOFNqdTJ5WDFwemZ0a3pqelMrOC9pY3ZrL2czN1g1TDF6UjlLK0k1bDZWOFNpN3YwdjRqZCtsL0VmSi9BN1g1TDF1dlNaS0tySng2VGt2WTJiTldwWlZQMUxwTmVpVDNSbGFsZmFNZHAvUmNkd1JHbjZ6SEprcXNoS0ZqNk5kR1M1SmpOVFdVY21tdklBT0ZrMVhYS2N1a1Uyell3Yzl3VTE2amxOdDl2WXQzdjFNZWNjdjhSWjhTTDhtUG82OXRsekJUUE9PWCtJcytKdmFUblgyWjBJWFd6bkdTYTJiOFRLMUVXOFlEcmFXU3lnQWxISUJoblJqNUN2ZHUzMkxIRDRHTWcrWVAwa2JKUTR6MDlQZlo0SzIrWm5rMUYvUTlzL1NnMDZjTXpRdFNqSDZEcm5TMzYwOS80bmlYRG1CYnJldFlPblk2M3N5TFl3WHZaNGJYUWZ5cHI4bnA5TEpkaUxQb1R5RmNFUnZYN1NhbFZ1b054dzR5WGo0ejkzUmU4OTcyMk5IUjlMbzBYUzhUQXhJcU5PTlZHdU8zcThmNG0rZXUwbW5qcHFWRmVmczgvZmE3ckhKZ0dqcTE4c2ZDc25DWExON1JpL1cyVnJ6aGxmaUxQbU90bHlyZUdjNHdjbGt1WUtaNXd5L3hGbnhIbkhLL0VXZk1jL2t4OUczYmZzdWU0TmZEVTQ0MUt0azVUNUZ6TitrMU5jeVo0K0xIc3B1RTV5MjNYb0pEbGlPNW5OTEx3U2U0S1o1d3l2eEZueEhuREwvRVdmRWovSmo2T3ZhWmN3VXp6aGwvaUxQaVBPR1grSXMrSStUSDBPMC9aY3dVenpobC9pTFBpUE9PWCtJcytJK1RIME8wL1pjd1V6empsL2lMUGlQT09YK0lzK0krVEgwTzAvWmN3VXp6aGwvaUxQaVRHaFczMzl0TzYyZGlXeVNremFGNm04SkdyZzBzazJOekRmTEZ0OUV1OHA5bXBaTXJKeWpmWWsyMmttYjJXS3Z5WWpGeUxqdUNtZWNNdjhSWjh3ODQ1ZjRpejRuTDVNZlJ2Mm43TG1DbWVjTXY4Ulo4UjV4eS93QVJaOFI4bVBvZHAreTVncG5uREwvRVdmTVBPT1grSXMrSStUSDBPMC9aY3dVenpobC9pTFBpUE9HWCtJcytJK1RIME8wL1pjd1Y3UmI4akl5MzJ0MDV3aEZ0cHNzSjNoUGZISnprdHJ3QUFkRFVBQUFBQUFFVnI5dkpoY25qT1NSS3NydkVWdk5mVlVuM1JpNVAzbkc1N1lNM2dzeUlVQUZXU3pNWXVVa2wxYjJMdlREc3FvUVhTTVV2eUtqcHRYYloxRWVxNXQzN3U4dUtKMm1YRFpIdGZPQVFPdDZpK1o0MU10a3Y2eHI5eE5aTnl4NkxMSDltTFpTWlNjNVNsTjd5azkyL1dadm50V0VZcmpsNU1BQWdFa0FBQUFBQUFBQTVkR211NW91R25Ydkp3NnJKZldhMmw3VjNGTjNMVm9TYTA2Ry8zcGZ2SmVuZjZzSEcxY0VrYUdzVzlscDl1ejJja29yM20rUVhFVnUwS2F2UzNKKzRsV3ZiQnM0eFdaSWdBQVZSTUIzNGRuWlpkTSttMDBkQTlobFBEeVlmSmZFRHF4ck8xb3JtdnRRVE8wdUU4ckpDT001S0VKU2ZSTGRrRHcvbGMxMlJYTjk5ajdSZngvZ1NXclc5amdYTmR6a3VWZThxMkxlOFcrdTJDM2NYdnQ2VjRvaTJ6MjJJNndXVXlPOHR2Qzc0bjRFeklVUTU4bkQvQVA2S3R1dmQxL0krZXZJRGhSeS9LTmhkckhmc0s1MmJQd2FSOWp4bFhsVWJyYXlxeVBSOTZhWjRkcFhBRXVBZksvajZoaVFiMGZWRk9GYlMvcXJHbStSL3dLdlhhZjhBNTRYTHhsWkoybXV4Vkt0K2VjSHUzaDNHV1lYUXl5L0t3ZytJN2RvVTFKOTdiazBWOGs5ZHQ3VE9jVSs2RVVpTUtxNTVteVhCWWlEdXhxdTJ5S3EvdlRTT3BFbG90WGFaMFcra0U1R3NJNWtrYlNlRmt0R3hYZUlyZWJJcXIrN0RkKzFsaWZRcUdxMjl0bjNQZnVUNVY3aWRlOFF3UnExbG1tQjFNN0ZjU2pBQUFBQUFBQnkyTTRCall0R2gxY21CR1cyM1BKeUt4N084dW1MVjJHTlZYOTJLWDVFclRyOVdUamErTUhWcVZ2WTROOHQrL2wyWHRmY1U1ZHhZK0liZVhHcnJYMjU3KzVGY05kUTh5d1pxWEFBQkdPb0FNN0FHQnNjdGdad0RHeGtBeUN3Y1BWY3RWMWorMUpKZTRtalMwcXJzY0NsUHViWE0vZWJwYVZyRUVRNVBMWUFCME5RQUFBQUFBVS9WYmUyMUM1OVVueXIzRnR0bXE2NVRmU0tiS1BPWFBLVW4xYmJJZXBmQ1IycVhPVEJsR0RrUWtTQ1c0ZnA1c3F5eDlJUTI5Ny82RmtJamgrcmx4Wno4WnovSkV1V2RLeEJFU2J6SWl0ZXQ1TUxrMzc1eVNLd1RYRWR1OTFOWDNZdVQ5L2NRcEN2ZVpuZXRZaURLVGJTUzNiZXlDVzV1YVZUMnVmU3ZCUG1mdU9VVnVhUnUzaFpKbkQwT2l1Q2VUSHRiR3U5Tjl5TjFhZmlycGoxL0tqWkJhS3VLWGdodHRtditvNHY5aFY4cUlmVzlQb29wamRSQlZ2bTJhWFJsZ0lQaU8zYUZOWDNwT1Q5eHBiR0tnemFEZTRyNEFLd2xndVdtMTlsZzBSZlhrVFpVYUsrMnVycis5Skl1OFZ5cEplQk0weThzNFd2Nk1sVjF5M3RNNXg4SVJTTFVVakt0N2JKdHMrOU50RytwZUlwR3RhNXlkUUFJQkpCeVJ4Mk9RQmF0RnM3VFQ2L1RGdUpJRUx3N1p2VmREMFNUK0tKb3Rxbm1DSWNsaGtKeEZidFRUVXZ0UzVuN3YrcFhpVjE2M256Vkh3aEZMNGtVVjlyek5rbXRZaVNlazZuK3FTN0s1dDB5ZmMvdXNzY29WWk1JdVVZMlJUVW83cmRicm8wVXZZbU9INTJPK2NGSjlrbzd1UGh1ZGFySC9LelNjZnRGaVhjRzlrRWErYmQyR0pkWjR4Zzl2YVRtOExKSEtqbDI5dGxYV2ZlbTlqcEFLZDh2Sk5YQ01wRTl3OVYzWFdldFJSQkZwMFdyczlQZzMxbTNJa1VMTXpTeC9wSkZrYkxROFNVbktTbTIzdS9wa2tDZTRxWGtqSnRlQ004eFlmb244NDh4WWZvbjg1Sm5HVFVZdVQ4RWF1RUY5R2R6OWxOenE2NmN1MnVuZFFnOWx1OXpYT1ZrKzBzbk45WlNiT0pWUzhzbHJ3RVNXa1lNTTIyeFhiOGtWNFBidkk1Rmo0ZnE1Y2F5YjZ6bHQ4RHJWRlNrc21rM2hIZDVpdy91eitjeDVpeFBSUDV5U1Jrc08zRDBSdHo5a2JIUk1TTWswcHRwNy9YSkh3TW1HYktLajREYmZrclhFRnZObHdoNFFoK2JJazJkUnQ3Yk52bjRjMnk5aTdqV0txeDdwTmt1S3dnYm1tWXNjdkxqWFp2eWJOeTJOTW5PSGF0N0w3UFFsRXpYSGROSXhONGlidm1MRCs3UDUyWjh4NGYzWi9PeVNCWmR1UG9qYm43STN6SGgvZG44N0htUEQrN1A1eVNBN2NQUmpjL1pHK1k4UDdzL25NZVlzTi9abjg1SmdkdVBvYm1ZakZRaW94NkpiSXlBZERBQUFBQUFBQUFCbzZ2YjJXQmEvR1M1Vjd5b2xoNGp0MnFwclQrdEp0KzRyeFhhaDVuZ2sxcmdHZHpCMjQ5ZmEzVncrOUpMOHlPdVdkR1czVHF1eHdxWWVQTHUvZWJSaExsU1NNV1M1SVNrK2lUYkxaZnBpUS9MS2xxMXZhNmhjOTkwbnlyM0drY3B5N1NjcHZySnRuRXFwUE1teVlsaEdWMEpyaDZybXV1dCs3RlJYdklWUHVMTm9OZkpoOCsyem5KdjNIV2habWM3SGhFcUFDekl3TkxMMHlqTnNVN3VmbVMyVzB0amRCaHBTV0daVHdSZm1ERS8ybnpEekJpZjdUNWlVQnAyb2VqTzUreVBvMGJHeDdZMnc1K2FMM1c4aVFBTmxGUjhHRzJ6V3pyZXh4THAraUQyS1lXYlg3ZVREVUYxbkpMM2RTc2tIVVBNc0VpcGNaTW95WVJ5U2JleVc3SXAwWmdBR1FTdWcyOG1YS0gzNGZ1TEp1VkRUck95enFKZUhOcy9mM0ZveTd1d3hick4vcXdiOSt4UG9sK2oreEhzWDZpcFp0dmJaZDA5OTA1dmIySFN1cGpyMTZtVjFJRGVYa2tMaFlNbGg0ZXEycHRzZjJwYkwySXIzcExicFZYWllGSzIyYlhNL2Yza2loWmxrNTJQakJ1a1ZyOXZKaEtDNnptbDd1cEtsZDRpdDN1cXFYMll0djNrdTU3WU00d1daRUtBQ3JKWnpTYmFTNnZ1THJSWDJWRmRmM1lwRlMwK3J0YzJpUGh6YnYzRnc4Q2JwbHcyUjdYbmd5QUNhY1FhZXFXOWpnWHkzMmJqc3ZlYmhEY1EyOHVOWFduM3pudjdrYzdKYllObTBWbGxjQUJVa3dGdzB5cnNjR2lQank3djNsU3FyZHRrSVI2eWtrWGlNVkdLaXVpV3lKbW5YbG5DMS9Sa0FFNDRBNnNpM3NhTExIMGpGczdTTjF5M3M4Q2FYV2JVVFNieEZzeWxsbFY2dmQ5V0FDb0pwbll0R2hWZG5neGx0czV5Y3Y0RlkzTEZqYXhoMFk5VmZOUDZNVXZxa21ocFN5MmNyTXRZUk1BalBQMkg5NmZ5TWVmc1QweitSa3p1UjluRGJMMFNZSXZ6OWllbWZ5TWVmc1QweitSbWU1RDJOc3ZSS0ExOFRMcnpLM1pUemNxZTNldGpZTjAwL0JxQUFaQUFBQUFBQU1HVEhnMkFWZlhiZTB6dVZQdXJpbDcrcEdIZGxXZHRrM1QrOU5zNlNvbTh5YkprVmhBa2RGcTdYUGcvQ0NjdjRFY1QzRHRYOWZaN0lvMnFXWm94TjRpVHhvNnJiMlduM1BmWnRjcTk1dkloT0lyZVdtbXBmYWx6YmV6L0FLbGhZOXNHeU5GWmFSWGdBVlJNTW91ZUhWMk9MVERiYmFLK0pVOFNydHNtbXZxcFRYd0xwc1RkTXZMT0ZyOEl3KzRydG5FTjhaelVLNjNGTjdiN2szblc5aGlYV2VpRDJLWDdUYStiaTBrWXJpbjVKaGNRNUwvN09yOHgrMEdUL1oxZm1RNW5jaTkyZnM2YkVTLzdRWlA5blYrWS9hSElYL1pWZm1STzQ2OXlNcTJmc2JJbHYwL0lzeXNhRnRzVkZ5MzdvK2cyenB4YXV4eHFvZmRpa2RwWlJ6aFpJejhsZDRpdTVzaXF0UDZzZDM3eUdOdlZMZTJ6NzVlQ2x5cjNkeHFGWFk4emJKY0ZpS0JJYVBSMitXOTF1b3drMys0anl3Y08xZjBkMXJYVnFLTTFSM1NSaWJ4RWdXdVNVb3ZxbnNOenYxQ0haNXQ4ZHR2cHRtc2FQaHRHeTVSeVVuQnFTNnhhYUxKclY2ODNMbGY5YTQvRHFWbzNzM0o3YkV3b2I3dU1IdjdlaDFoUGJGbzBrc3RHZ0FEZ2REc3JnN0p3Z3VzbWtpN1Fpb1JVVjBTMlJVOUlyN1hQcFhoRnVUOXhidGlmcDF3MlI3ZklLaHExdmE2aGMvQ0w1VjdpMnprb1FsS1hTSzNLTktUc2xLY3VzbTJZMUx3a2hVdWNtREtSZ3ltUVNRUzJnVmMrWE9iK3hEOTVaZkFoK0g2dVhIc3NmMjU3TDNFd1dkS3hBaVRmNmdBRHVhQXJPdjI4K1pHQzZRaCtiTE1VelVMZTJ6YjU5VnpOSWk2aDRoZzYxck1qV0FCWGtrMzlHcjdYUHIzNlEza1cwZ09IcXZwWDIraEtLSjhzcUZpR1NMWTh5QUFKQnpCQWNSM2Q5Rlh0ay8zRTgyVlRXcmUxejdFbjNRU2lSNzNpQjByV1pFZUFDdEpRQUFBQm5ZYkdjQXdaMkNSeWpGemtvcnEzc0VnV3ZTS3V4d0tsNHlYTS9lYnh3cWlvVnhpdWtVa2N5M2lzSkVKOHNBQTJNQUFBQUFBQTE4MjNzY1M2ZmpHTDJOZ2l0ZXQ1TUxrWFdja3Y0bWszaUxabUt5OEZZQUJVRTBGcjBTcnM4Q3R0ZDgyNUZVU2I3bDFmUXZHUFdxYUs2MTltS1JMMHk1Yk9OdmpCemZRcSt2VzlwbmN2aFhGTDN2dkxRK2hTOHkzdHNxNnp3bE5uWFVQRWNHbFMvVWRCbEdBVjVKSlRRNnUwemxMd3JpMy9BQUxRUWZEdFg5SGRhL0ZxSzl4T0ZuUXNRSXRqeklpdGZ0NU1MazM3N0pKZTVkNVdDMjZqcHExQjE4MXJnb2I5eVc1by9zNUQ4Ukw1VGhiWE9jOHBHOEpSaWlBQnNaMlBIRXlaVXhsejhxVzcyTmNpTk5QRE82ZVZrSGZoVmR0bFUxL2VtdC9ZZEJLYURWejV2TytsY0cvZSs0MnJXWkpHc25pTExRY0xwcXFxYzMwakZzNWtmck52WllGbTNXZTBTMWs4UmJJaTVaVkpQbWsyK3JlNWdBcHlhQzI2UlYyT0JWdjFrdVorOHFjWXVjbEZkWlBaRjRyclZkY0lMcEZKRXZUTGxzNDJ2akJXTmNyNU05djc4VS80RWFUdkVkZTBxTFBUdkYvdklJNDJyRTJid2VZZ0FISTNBQUFKdmgycmUyNjEvWmlvcjNsaEl2UXF1VENVdHRuT1RsL0FsQzBwVzJDSWszbVJvNnZiMldCYzA5bkpjcTk1VVN4Y1JXN1UwMXI3VXQ5dllWMGlhaDVtZHExd0J1RG5WQjJXd2d1c3BKRWRjczZsdTB5dnNzR2lQank3djJ2dk5zNHdTakZSWFJMWkhJdDRyQ1NJVDVZQUJzWU91K3hWVTJUKzdGc283ZTdiZlZscTF1M3M4Q3hlTTJvbFZJR29lWGdrVkxnR1V2aVlPWFJkM1VpSFZzcytoMUtHQ3BmZmszL0Frem93NnV4eGFvZU1ZSk03eTNnc1JTSWJlV0FBYm1ERW1rbTMwWGV5ajNXTzI2eXg5WnliL010MnBXOWpnM3lYWGwyWHY3aW5FSFV2bEk3MUx5d0FDR2R6dnB3c2krSFBUVEtjZDl0MGRxMDNNL0R6TEhwVlhaWUZLYTJiWE0vZWJteE5qcDAwbms0T3hwbFE4MjVmOWhNZWJjdjhQTXVHdzJOL2p4OW1PNnluK2JjdjhQUDRHeGc2YmtMTXBkdE1vd1V0MjM2aTBiRFlLaUtlY21IWTJBQVNqa0FBQUFBQUFBQUN1Y1EyNzMxVnA5MFl1WHZaWXlvYXRiMjJmYzkrNkw1VjdpTnFIaUdEcFdzeU5JQUZjU2piMDJudHM2bU8zZHpidjJMdkxpaXQ4UDFjMlRaWnQ5U08zdlpaQ3gwNnhESkdzZVpIUm1XOWppMjJmZGkyVXIybG8xNjNzOEhsWFd5U1h1NmxYT0dvZVpKRzlTNHlBRE1ZODBrbDFmY1JVZGkyYVBWMmVCVjNiT1gwbjd6Zk9GVUZWWENDNlJpa2N5M2lzUlNJVGVXREQ2R1RYemJsUmkzVDM2UmUzdE5tOExJWExLamwyOXRrM1dmZW05anBBS2R2THlURjRCWXVIcXVXaTJ4cjYwdGw3aXZyb1czU2F1eXdLVjR0Y3o5NUlvV1o1T2Rqd2pkSUxpSzM2TkZXL1Z1VEp6Y3F1dDI5cG56Vy9kQktQOGY0a20rV0lIR0N6SWpnQVZwTE56U3F1Mno2VjRSbHpQM2Q1Y0N1Y08xYzExdGorekhaZS84QTZGakxIVHJFQ0xZOHlJclg2K2JCVXZHRTAvNEZZTGxxVmZhNE44ZjdqWlRTUHFGaVdUcFUrQUFDTWRnWlMrSmcyTU92dHNxbUM4Wm8yU3k4R0c4SXR1SlYyT05WRDdzRWp2TWVHd2ZRdGx3aUVWalg3ZWZOVUUrNnVDWHZmZVJaMzV0dmJaZDluM3B2YjJIUVZVM21UWk1pc0lHL28xWGE1OVc2N283eStCb0U3dzdWdk82M2JvbEZmdjhBNUcxUzNUUmlieEVuMEFDMUlnQUFCQWNSVy8xRlh0ay8zZnpJSWtkYnQ3VFBtbDNxQ1VTT0txMldac2x3V0lnNzhTdnRzcW1IaEtTM09nazlDcTU4NVNmU0VXLzRHc0ZtU1JtVHdpMG9CQXR5R0FBQVEvRUZ2TGl3cjhaejNmc1JXeVc0Z3Q1OHVGYSt4RHY5cklrcTdubWJKVmF4RUhPdUhhVGpCZFpOSTRHOXBWWGE2aFN0dTVQbWZ1T2NWbVNScytGa3RrSUtFSXhYU0tTT1FCYnJnaGdBR1FBQUFBQUFBQUFBQUFBQUFjTEpxdUVwUHBGTmxJbk4yVGxKL2FiWmJOWHQ3TFQ3WHYzeVNpdmVWRWc2bDhwSGVwY1pBQUlaM0xMdzlWeTRzN1BHY3YzRXVhbW0xZGpnMFIyMmZLbS9hKzgyMlcxYXhGSWh5ZVdWM2lLeHUybXZ3VVhJaFNXNGczL1hZK2pzMSs4aVN1dWVac2tRL2xBVDJlNjZydkFPUjBMTGo2L2p6Z3UzNXE1K1BkdWp1ODk0WDlvL2xaVkFTVnFKbzVkdUphcGE1aHBicWNwZXBSSWZVdFdlYXV6cmp5Vko3OS9Wa2FEU1YwcExCbFZwUElBQnhPaHpyZzV5akZkWk5KRjNoSGtoR0s2SmJGWDBURzdmTVUydm8xZlM5L2dXcEUvVHg0eVI3WHpndzlsSGQ5RWlrWkZuYlgyV1A3VW15M2FqYjJPRmROUHY1V2w3V1UwMDFMOEl6VXZMQUFJWjNMTm9GWEpoT2ZqT1Rmd0pZMThDcnNjT21Ib2d0ellMYUMyeFNJY25sNU9NNDgwSlJmaW1panpqeVRsRi9aYlJlbVUzVXEreXpyNDlGejdyM2tmVXJoTTZWZVRWQUJCSkFKUFFhdWZPNS9DdURmdmZjUmhZZUhhZHFicmZ2U1NYdS82bmFsWm1qU2J4RW16b3k3ZXh4cmJQdXhiTzhqTmR0N1BCY2QrK2NraXhtOFJiSXFXWGdxd0FLZ21ndE9oMTluZ1Jmak51UlZ0bStoZHNXdnNjZXFDVzNMRklsYWRaazJjYlh4ZzdnQVdCSEJodmJkK2hHVFcxQzNzY0srZmlvUGIydnVNTjRXUWlvWk5qdXlMYlB2VGJPc0FwMjg4azFBc0hEbFcxZDFyOFdvb2dObVd6UjZ1eXdLdTdaeTNrL2VkOU9zek9kai9TYjRBTElqQUE2c2l4VlUyVGZkeXhiTU40QlVkUXQ3Yk52bjRjN1M5aTdqV0RiYmJmajNncUpQTGJKcTRRTnpUYzJPRGRLeVVIWTNIWkpQWTB3WVRjWGxCckt3V0g5bzRmaDUvTWgrMGNQN0NYeklyeHlPM2ZzOW5QWkVudjJraC9ZUytaRDlvNGZoNWZNaXZneDNwK3pQYmlXSDlvNGYyRXZtUnlyMStOazR3alJMZVRTWDBrVjFkVGUwbXJ0YytyMFJmTS9jYnh1c2swaldVSXBGdEFCWWtjQUFBQUFBQUFBZytJcmRxNmFrK3JjbXZZUUpQNnJwdVZtNUtuVW84a1k3TGVXeHBlWXN6N3NQbks2MkU1VHpna1FsRlJJdHBuWmoxOXRmWFh0dnpTU0pEekZtZmRoODVzNmZvOTlHWFhiZW9jc08vdWx1YVJxbmxjR3ptc2VTZWl0a2t1aU1nRm1SU0UxL0VsWkNGOEZ2MmZkTDJla3J4ZTVKU1RUVzZaQzVtZ1JuSnp4SktEZjJaZFBjUTdxbko3b25hRTB1R1Y0eWticzlIemEzL1V1WHJpMHpnOVB5bC8zZTM1U0s0U1gwZHR5TlhZYkd5OERLL0QyL0t3c0RLL0RXL0tZMnk5RGNqVjJCdCtiOHAvOTJ0K1U1UjB6TW4zTEhtdmJzaktoSi9RM0kwanNvb3N5TFkxMHhjcE1sYU9IN3BQZkluR3RlaGQ3SnJGd3FjT0hMVEhiMHQ5V2RvVVNiNU5KV0plRGpnWWNjS2hRajN5ZmZLWHBadGdGZ2tvckNJM2toK0liZVhGaFV1czUva2l0bGkxZlQ4bk52ZzZWRndqSHhsdDNtaDVoelBSWDg1QXRqT1UrRVNJT0tqeXlNTzNIcTdiSXFyWDJwcEc5NWh6UFJENXphMDNSOGpIeTRXM3FLakhkOTB0Kzg1eHFsbFpSczVySGtubDNMWXlBV2hGQldOZnI1TTFUMit2QmZrV2NpdFkwKzNON0tWQ2k1UjNUM2UzY2NMb3VVTUkzZzhTS3dDVDh3NW4zYS9uSG1ITSs3RDV5QjJwK2lSdmo3SXd0MmtWZGxnVkx4a3VaKzhoUE1PWjZLL21MTlZEczY0d1gyVWtTcUlPTGJaeXNrbXNJNWxlNGl1M3NwcVhnbkpsaFpBYWxwZVZtWms3SVJoeWJKUjNsNEhXNU53d2pTR0UrU0NCSitZY3owVi9PUE1PWjZLL25JSGJuNkpHNlBzMDhLdnRzdW1IZzVyNEYxSUxUTkp2eHN1TnQ2anl4VDIybHYzazZUYUl1SzVPRmp5d0FDU2N3UlBFRnZKaHhnbjN6bXZnaVdJaldNREl6Ykt1d1VYQ0tlKzh0dTg1VzUyUEJ0SEdlU3RHVVNYbUhNKzdENXpQbUxNKzdENXl1N1UvUkozeDlrZEZPVWxGZFc5a1hhcUNycmpCZEl4U0svaTZMazE1TlU3VkRrakpON1MzTEdpWHA0T09XempOcCtBQUNXY2dSMnQyOW5nV0xmdm0xRWtTTDFqRHZ6STFRb1VlV0xiZTcyT2RtZHJ3YlJ4bmtxNEpQekRtZWl2NXg1aHpQUkQ1eXQ3VS9SSjN4OWtZQ1Q4dzVuM1lmT1BNT1o5Mkh6anRUOURmSDJSaGtrdk1XWjkySHovOGg1aXpQUkQ1L3dEa08xUDBIS1BzalRCS2VZc3owUStmL2tQTWVaNklmUDhBOGgyNStodWo3SXpvVGZEdFc4N3JYNEpSUnIrWXN6MFErZjhBNUV6cFdIUER4dVMzYm5jbTNzOXp0VlhKVHkwYVRrbXVEZkFCWUVjQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQXh2M25HVmtZUmNweVVZcnhiMk1ONEJ6Qm9XYTFwMVQyc3o4V0Q5ZDBmNW5VK0k5SVhYVk1OZit2SCtaejd0YS9xWDdtMjJYb2xBUlg3VGFOLzR0Zy84QXlJZnpPZFd2YVhmTGxwMVBEc2ZvamtSYi9lWlZ0YjhTWDdqYkwwU1FPTVpLU1RpOTAralJrM3lhbVFBWkFBTWJnR1FhbVZxZUhncmZOeThmR1grMXRqRDk3Tkg5ck5CLzhhMDcvd0NWRCtabzV3WGxteWkzNFJNZ2lGeFRvYjZheGdQL0FOekQrWnlYRW1qeStycXVFLzhBM0VQNW1PN1gvd0JrWjJTOUVxRFRvMVRDeVdsajVtUGEzNFF0aS80bTN2NkRaU1Q4TTFhYThtUUYwQnNZQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQnhsSkpOdnVTT1RQSFBMajVRTE5Bd0lhSnBWdkpuWmtXN1p4ZmZDdjhBbXlOcWI0NmF0MlNPdFZVcnBxS09mSGZscXh0SHR0d09HNHh5OHVQMFozdnZoQityMHM4YjFIaTNXZGR0ZG1wYWhmYnUvcTg3VVY3a1ZTbHVXemsyMityWklWZER3MnAxZDJvbG1UL3dlbHEwOWRLeEZFalUzTi9TYmZ0WnZWUWo0eFJIMFB2SkNsOUN2WkpTTnlxcXR2dnJnLzhBeW8yNFkxRWx0S2l0KzJDTmVyd04yczV0c1lKUFNjM08wYXhXNkhuMzRNMTM4aWs1MVM5VXEyOW12WnMvV2V5OEU4WXc0bm91cXlxbGk2cGpKZnJGS2U4V24wbkIrTVhzL1duM004VnA4Q2I0WnpaYVp4WG9tVEJ0SzY1NGR2cmhZdTc0U1NaYjlNMTlsTjBhNVBNWHdWK3IwMExJT1NYS1Bld3pDNkdKeVVJU2xKcFJTM2JmUkk5OGVjSTdYZGV3ZUhkUG5uYXJkMk5NV29wSmJ5bk45SVJpdStVbjRKSGsrdDhUOFE4UlNibmsyOFA2YS9xNHVMSkxJc1grMHQrei9oaDhUb3lOWGx4aHJrOWF1YmxnVXlsVnBWVDZScjZTdTIrOVBidWZoSFplTE01bmN6dzNVdXIyV1dPcWw0aXZ2MlgybDBjWXBTbXNzcWVScEdEWEp5L1ZvV1dON3VkdTlrbS9TNVMzYkl6S3hhRW50UlV2WkJGaHpQRWhNdm95alVwUGxzczhKZUN2NVZOYTMycmd2WkZFTGxSUzM1VWtUMlY0a0hsOVdkNDVHRVJObVJkank1cUxiSzVMbzR6YUxYd2o1YXVJdUVzcXFPUmt6MUxUazEybEY4dVo3ZXFYVk1wK1Y0a1BrSWxWV3pyZVl2QnBPdUUxaVNQdnpoYmlYQjRzMFRHMVhTck9mSHZqMGZXRXZHTDlhSmsrYmYwWE5hdGw1NjBpeWJkVVZHK3RQd2ZSL3Y4QXlQcEZIdWRIZTlSU3B2eWVaMUZYWnRjVVpBQk1JNEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQndzbXE0U25ON1JpbTIvVWZFdkhPdlQ0azR0MVRPbkp5aks1d3I5VVYzSSt0L0tEcXEwWGc3V016bTVaUXg1UmkvWEx1WDd6NGtyazV5Y3BkWDNubCtzMk55algva3V1blE0bFAvQkpVZEVTZUhUWmtYUXFvZzUyVGtveGl1cmI2SWpLT2lQU3ZJN3BjZFM0MHhKV1I1b1kwWlhQZGVLWGQrZXg1K3V0MjJSZ3ZzdGJKN0lPWG91T2orUXZLdXhhN2RVMUtPTGRKYnVxRmZQeStwdmZxU2k4aHFpdm82MUwzNDYvbWV2OVBBeWV5ajByU0pZMjVQT3ZXM3QrVHdqaWp5WlpQRE9rM2FuVnFFTXluSDJkMEhWeVNVZDltMDkzdnR2MEtsWDZ6MmZ5dTUzNnJ3aFpqcDdUenNpcWhMMWMzTkw4b3M4WXI3NG5sdXEwVmFlNVFxV09DNDBWazdhM0tmczNhaVEwK0R1MXpRS29MNlV0VG9lM3FpM0ova21SOVJaZUJjVDllNDIwNU5ieHc4ZTNLbDdkbENQL0FObVYraWc3TlRDUDVKRjh0bFVuK0QzQXBQbFYxUzdCNFRzdzhPYnJ5dFZ1aGdWeVQ3NHFiK25MM1ZxWmR6eWJ5b1pQNnp4Um9XQ3U5WW1OZGx6WDk2VFZjZnk1ejMzVUx1enBaeVhuQjVyVFE3bHlSRTROVmRGVmRkRVZDcXVLakNLNktLN2t2Z1l6RjNuWmkrQnd6T3JQbDY4bnFTQnVweU16TXg4SFRhSGxaMlZKeHBxVDJUMjczS1Q4SXBkN1phcWZJMXFPUlZHV2RyV1BUYTEzd3B4bkpMMWJ1VzcrQnRlU3pEV1Z4RnJlZkpickVwcXhLbTEwbEwra24rWElldEk5djB6cGxObENzdFdXeWwxV3JzaFk0UWVNSGpVL0lTN1ByNjYvZGlwZi9vODY4cFhrNnM0SWhpWExOV1pUa3R4VDVPV1VXdlVmVlI0ZDVjZEkxelg5VTA3SDBmUzh2TXhzZWh5bE9xdHVQUEo5Ti9Za1NOYm9OUFZRNVZ4NU5kTnFyWjJwU2x3Zk9lVDNrUmtkV2VnM2VUVGkyejZ1Z1ozK1V6UXQ4bFBHTm4xZUg4ejVEemlxcy82djlpNTdrUGFQUVAwVzhXVXRiMXZKUytoREdqRDN1U1BxRmRUeDc5SDdnN1A0VTBEVVphMWgyWWVaazVDWEpZdG55eFhjL1p1MzhEMkZIcytuUWNOTXMvWjV6V1RVN20wWkFCWkVRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBci9HUEN0SEdPa1Mwdk92dG94NXpVcDlsdHZMYnc3enoyUDZPM0RjZW1WbS9NajJJRVMzUjBYUzNUamxuZUY5bGF4RjRQSkkvby9jUFI2WldiOHlMTndkNU45TjRLek1qSjAyMjYyZDFmWnZ0V25zdDkrNHVwamZxYVEwT21ya3B4anlqTXRSYk5iWlM0Q09ObHNLWVNuYktNSVJXOHBTZXlTOUxaVitKdktCb3ZERVpReXNqOVl5MTB4NmZwU2I5Zmd2ZWVKY1U4ZTZueGZOMVh6L1ZkT1QzamkxUHVmOEFqZldYN3ZVY05WMUtuVExHY3YwZEtOSlpjL0dFVEhsRjR0cDRwMWVpblRwZHBwMkJ6Y2xpNlcyUHVjbDZrdTVQeDNaVzZ1aU5HbncyV3h2VkhoZFJmUFUyT3lYbG5vNnE0MVFVWW03VWVpZVNQQzdYSzEzVTVMZUtuWGhWUzlQSXVhZis5UGIzSG5IUE9NWVJ4NjNka1dTVmROUzZ6bSs1UlI3NXdmb0VlR2VIc0xUdVpUdHJpNTMyTDdkc256VGw4V3kzNkhRNTM5MzZSQTZoWW8xN1BaT25oZXY1Zm5IampYOGxkOEtKMTRWYjlWY2Q1ZjcwMzhEMi9LeWE4VEh1eUw1S05WTUhaT1Q4RWx1MytSODZjUFcyWldERE55TisyejUyWmRtL3B0azVyOG1sN2l4Ni9idG9qRDJ5SjA2R1p1WG9zbU40ZTA0Wm5WK0IyWTNnUm5FMldzSFNNN0ljdVhzNlpiUDF0Ykw4MmVHaXN2QmVIbzNrbnhPeDRUV1pKYlQxTEt1eTM3SExsai91eGlYbmM4Q3Q0NDF0NlRnNmRvRFdoNmRpNDhLbGRLdFR5YmRvcGJwUDZOYWZyVGZzS2pxR1ZtM3ljOHJVOVJ5YlBHVnVYTi9rbWtlNmoxYlQ2YXVOY0ZuQ0tONkt5MlRuSjR5ZlZlNWcrT3I4ektyMzdQTXk0dncyeVovek5KOFM2MWhUNXNiVnM2dHArR1JMK1psZGNnLzZQOW1mNGRML0FMSDJrUGlmSjJnZVhUaVhRc2lDMUs1YXRpSi9UaGV2cGJlcVM3LzNuMG53anhacC9HT2oxYWxwTm5OWEx1bkNYMXE1ZU1XV3VsMTFXcWVJOFAwUXJ0TlpSekx3VDNpWkM2QXNDTUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCdUFZYk1PVzNlUWZGWEYybGNINmZMTjFySVZVUHNRVCtsTitoSStiZU5QTGhyUEUwck1iUjNMUzlQZmR0Qi9UbXZXeXUxV3VxMHZENWZvbFU2V3kvbGVENkE0bjhwV2c4THdsSEt5NDM1SzZVVXZtbHY2L1FlTGNTK1dUV2RmYzZkTmZtekVmZHRXL3B5WHJsL0k4bWpaSzJUbmJKem0rc3BQZHMzOGM4dnFlbzMzOFp3dndYZE9qcXE1ZkxKT05rclpPZGtuT1RmZTI5MnplcDZrZlNTT05DVms0UXJqS2RrbnRHTVUyNVAwSkxxVTd5eWQ0Tityb2plb1U3TGE2S0s1MzVGcjJxcHJqelRtL1V2NDlFV25oM3lXYTFxM0picVAvOEFrNHI3OTdGeld5WHFqNGUvNEhyZkRuQjJrOEwxeTgyWSs5OWkvcGNteDgxdG50bDZQVXRrVzJsNlRkZmlVLzByL1pYM2E2dXZpUExLMXdINVA1NlJkRFZ0ZTVaNmx5N1VVUmU4TVdMNjkvak4rTXZEb2owVFlHVDJkRkZlbmdvUVhDS0N5eVZzdDBpbCtWYk9sZzhDNnRDcVhMZG1RamgxKzIyU2grNXRubUdKQ05VSVFyU1VJSlJpdlVsc3Z5UmJ2TEZtOXBmdzdwa1gzVHlMTXV4ZXF1TzBmOTZhK0JVc2ZvZUw2N2J2MUNoNlJlOVBodHAzZXlWeGpwMUN1RnE1YklxYTNUMmEzNzEwTy9HTlBVY25iS3B4TWFtN016cjkreHhxSWMxazB1cjI4SXJ4azlrZWNoR1U1YllyTEo3YVhMSWZMWFVnY3Z4UFFhL0oxeFJudzU3S05Qd1UrL2t0eVhPUzl2TEhiOHpxczhqL0FCRmJ2elpXbUwyU3Mva1hNZW02dkdkak9IeXFWL1VlVFpYaVFXWDRub0hHbkJPcWNJTEhucWJvdHB5TjFDeW1UYTVsNE5QMUhuK1gzdG5LVmM2cGJackRPMEp4bXQwWGxFTmtyYzllL1J0MXEzRzRuejlLNTMyR1ZqdXhSMzdsS1BqOE56eUxJWGVlby9vNTRVcitPcjhoTDZHUGh6YmZ0Mlg4U2RvVzFxWVk5bkRWSk9tV1Q2dlhRQmRBZTlQTGdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFpZUpOZnhPR2RGeTlVMUdmSlJqMXVUNytyOEVpV1BuUDlKemlhVmRlbWFCUlBaV2I1RjZUNnBkeVRJZXN2K1BTNXJ5U05QVjNyRkU4YTR6NDIxRGpuWExOUTFHeVhaYzIxRk8vMGE0ZUMySXVud0k2bnFpUnA4RHdrcE9UeS9MUFV4aW9yQ1JJMHZ1SnJTZE95OVV2alJwK05iazJ5ZXlqWEZzdVhrcThsbG5HQzg0NnJLVkdsUWxzbEg2MXI4VXZVZlNlaWNPYVp3L2p4cDBuRHF4NHBiTnhqOUorMWxqcGVtMmFsYjN4RWczNjJGTDJybG5qUERIa1N6c21OZDNFR1FzS3Q5L1l3MmxQMytDL005ZDRmNE8wZmhxQ1dsNGtJVzdiTzZTNXJILzV2NUU5c05qMDJuMEZHbTVpc3YyeWx0MU50M0Vud1lTMk1nRmdSZ1lNbkY5eTcrbmlZWVBDdVA4QU44NGVVRE5qRjcxNmRpVTR5L3h6M3NsK1RnYW1PUTlHYjUyejlTMVNYK3NNNjYrUCtEbTVZZjdzSS9FbU1md1BsK3VzN3Vvbkw4bnJhWWJLb3gvQkxZeTNhTGY1TU5PcmxwZVJyYzYwOHJVNzV5VmpYZXFJU2NhNEwxYkp2YjB5YktIbTVMdzlMeTc0L1dycGs0cis5dHN2emFQWmVITk5XajZEcG1DbHQrclkxZGI5cWl0L3pMai9BTWZwVXJaV1A2Ulg5UW5pQ2l2c2swWk1keGs5eVVSNGg1ZmRSM25wR254ZmZHTTc1TDRSWDhUd2JKNnM5TThyZXBlY2VOTlFTZThNVlF4NCsxTGQvbkk4enllclBuK3VzN3VxbS96ajlqMUdsaHNwaWlIeWVyUG9UOUdmUit6MDNXZFZtdSs2Mk5FSDZvcmQvdlh3UG52SjZzK3cvSTFwSG1qeWU2VEJ4NWJMNHl5SisyVDd2eTJKblNhOStwejZPT3ZsdHB4N0w2dWdBUGFIblFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBWVlCbG54RjVidGI4OStVdlZlU1hOVmk3WThlLzd2WDh6N1MxUE5qcDJuNWVYWTBvMFV5c2UvcVRaK2VHb1owdFQxblB6Ykc1VHlMNVRiZmp1enozV0xNUmpEL0piOU9obVVwSGJTaVN4b09jb1JYZHpTUytKRzBralQwUjVobDJmWS9DUEVuREdoY09hZGdRMWZDcmRGTVZPUGFMNjIzZitaTmZ0NXcwdjljNGYrWWZGOUs3a2I5S0xhSFY3cW9xRVlyZ3JKYUNFbTIyK1Q3QS9iL2huL3dBWnhQbk9MOG9YREMvMTFpL00vd0NSOG9VZFNScDhCL0hMMS9TaC9EYS9iUHB4K1VYaGRmNjZ4ZmkvNUdZK1VUaGVVNHdqck9NNVNrb3hYZjN0OXlYUStjYVh1V1BoTEI4NThUNlJqTmMwWlpNYkpyKzdCT2IvQUhMNG05WFd0UmJaR0NpdVdhVDBGVUl1VGI0UHBGUGNoT01NNldtOEthMWx3YlU2TUc2Y1d2VHlQYjh5YThDdThmNHM4emdyaUNpcE56bmdXOHFYaTFGditCNnF6S2cvN0ZMRG1TUEJkS29XTmlZMUs2VjFRajhJb25NZndJZkJzamRUVlpCN3huQ01sN0d0eVh4ejVSUHl6MlAwZDJwVnpzMDZicXFsZTY3S3JYWEZkODR3c2pLVVY2Mmt6MU9qeWs4SzNWeG41N3hLbTF2eVd5ZGNvK3B4ZXpUUFBjWHdPbk9qR1RibEdMZnBhM0xMUWRTbm9FNHhqbkpDMUdtanFHbTM0UFRWNVFlRm4wMTdBL3owUm11ZVZQaDdUY095ZURtMTZubDhyN0tqSGZOelM4TjMwaXZTMmVUWmNJOS8wWS9LaUJ5MXNta3R2WVd6NjdkT09GQklqcnAxYWZMWkM2bGtYWmQ5K1RsejdUSXZzbGJiTDB6azkzK2JJSEs2c204dnhJWEo2c3BFMjNsbG9samcwc0xBczFQVThYRG9pNVdYM1JoRkx4M1o5MGFaaHcwN1Q4WEVyK3BqMVJyVzNxV3g4NCtRZmd5ZXFhL0xYc3V0ckQwL3VxYlhkTzVydTI5aTcvYnNmVEd4N0RvOURoVzdIOWxEMUMxU21vTDZNZ0F2eXJBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCaG1RMXVBZWQrVzNYUE1YazUxZTJNdVd5K0NvaDMrTWo0ZHhJOS91UHY3alhnVFRlUGRQcHdOY25mK3JWMmMvSlZQbDVuNnlqdy9SczRLcityWG0vNTU1N1hhUFVhbTNkRmNmM0xiU2FtcWl2RXZKOGwxSWtLVjNJK3FvL283Y0d4NlY1bitlZDBmMGYrRDQ5S3NyL1BaV3ZwT3E5TDl5WjgrbjhuekJTdWh2MG4wdkh5RWNKUld5cHlmODVuTmVRN2haZlZoa3IyV21qNlJxMzlMOXg4K2srZHFGMEpDbnFqM24vUWp3MnZxeXpJK3kxZnlPUzhpdWdMNnQrZEgvMUYvSTAvZytyZjB2M00vUG8vSjRsVDRIcEhraHdQMW5pUE16SkxlT0hpS0VmVk95WC9BQXcvTXN5OGpHaUw2dVpxQzlsa2YrRXMvQzNDR0Z3blJrMVlGbDFyeWJGT3lkMGs1ZHkyUzdrdTRtYUxwVjlPb2paWmpDL0pIMU90cnNxY1llV1Q2T000S3lEak5LVVd0bW4wYU9XeGs5WmdwRDV5MXpRTGVCOVdscDJXcExUYmJHOU55WmZWbEJ2ZFV1WFJUanZzaytxUzI4VGF4KzdyM005NDFIVE1QVjhTM0UxUEdweThXMWJXVlhRVTR5WHJUS1JkNUlOSmczNW4xRFU5S2g0VlZaSGFWeDlTallwYmU1bmtkWjBPY3B1Vkw0ZjBYVlBVRW9xTmlLcGpkVWRlYjRscWg1TEw2L3E4VDUvL0FNYW4vaE16OGxkMW4xK0pjNS8rM3AvNFNzL2dXc3o5ZnVTUG5VKy85SG11WjRrRGwrSjdCUHlQeHMrdnhEblAvd0JHci9oT3YvUXBoemY5TnJXZk5lS1VLMS8rVHBIbzJyWDB2M00vT285LzZQQnN4ZHo5Uk5jR2VUYlUrTmNxRmtZU3hkTFQvcE11Y2U1cjBRKzgvd0FqM2ZTL0pId3hwMWtiYnNTelViWTk2bG1XT3hKLzRlNlA1RjNycWhWQ01Lb3hoQ0syakdLMlNYbzJMWFRkR2FlNjUvNFJGdDZoeGl0R2hvZWk0ZkQrbVkrbmFYVXFjYWlQTEZlTGZpMi9Gc2tqQ1JrOVBHS2lzSkZPMjI4c0FBMk1BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQXh1QVpBYjJNYmdHUUFBQUFBQUFudUFBQUFBQUFBREcvZUFaQWZjWTNBTWd4dU53RElNYmpjQXlERzQzQU1neHVOd0RJTWJqY0F5REc0M0FNZ3h1TndESU1iamNBeURHNDNBTWd4dU53RElNYmpjQXlERzQzQU1neHVOd0RJTWJqY0F5QW51QUFBQUFERzVrQUFBQUFBQUF3M3NOd0RJQUFBQmh2WUF5QUFELy9aJyB4PSc1OTYnIHk9JzkwJyB3aWR0aD0nNDA4JyBoZWlnaHQ9JzI5OScvPgo8L3N2Zz4=" alt="Registration banner">
+    <div class="hero-bar">
+      <h1 data-edit="" contenteditable="false">Ignite '26 — Registration</h1>
+      <p data-edit="" contenteditable="false" style="font-size:16px; font-weight:600; color:#A9741F;">Experience the world in one place at Global Village by AIESEC in GUC, a celebration of culture, diversity, and global unity.</p>
+    </div>
+  </header>
+
+  <main class="wrap" id="formRoot">
+
+    <!-- ================= PAGE 1 ================= -->
+    <section class="page active" data-page-id="p1" data-page-name="Round 3" data-next="__SUBMIT__">
+      <div class="section">
+        <div class="section-head">
+          <h2 data-edit="" contenteditable="false">Round 3</h2>
+          <p data-edit="" contenteditable="false"><span style="color: rgb(255, 255, 255); font-size: 16px; font-weight: 600;">At The European Universities in Egypt (EUE)</span></p><div><font color="#ffffff"><span style="font-size: 16px;"><b>On 14th of August</b></span></font></div><div><font color="#ffffff"><span style="font-size: 16px;"><b>At 3pm onwards</b></span></font></div><p></p><div><span style="color: rgb(255, 255, 255); font-size: 16px; font-weight: 600;">Hosted by GUC . Powered by AIESEC</span></div><p></p>
+        </div>
+        <div class="section-body">
+
+          <div class="q" data-type="text" data-qid="first_name">
+            <span class="q-label" data-edit="" contenteditable="false">First Name<span class="req"> *</span></span>
+            <input type="text" placeholder="Your answer" required="">
+            <div class="err">This is a required question</div>
+            <div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div>
+          </div>
+
+          <div class="q" data-type="text" data-qid="last_name">
+            <span class="q-label" data-edit="" contenteditable="false">Last Name<span class="req"> *</span></span>
+            <input type="text" placeholder="Your answer" required="">
+            <div class="err">This is a required question</div>
+            <div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div>
+          </div>
+
+          <div class="q" data-type="mc" data-qid="gender">
+            <span class="q-label" data-edit="" contenteditable="false">Gender<span class="req"> *</span></span>
+            <div class="choices">
+              <div class="opt"><input type="radio" name="q_gender" required=""><span class="choice-text" data-edit="" contenteditable="false">Male</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del" title="Delete option">×</button></div>
+              <div class="opt"><input type="radio" name="q_gender"><span class="choice-text" data-edit="" contenteditable="false">Female</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del" title="Delete option">×</button></div>
+            </div>
+            <div class="err">This is a required question</div>
+            <div class="q-tools"><button>+ option</button><button>Make optional</button><button title="Delete question">🗑</button></div>
+          </div>
+
+          <div class="q" data-type="dd" data-qid="nationality">
+            <span class="q-label" data-edit="" contenteditable="false">Nationality ( Egyptian / Not Egyptian )<span class="req"> *</span></span>
+            <select class="dd-live" required=""><option value="" disabled="" selected="">Choose</option><option data-goto="p_egy">Egyptian</option><option data-goto="p_nonegy">Not Egyptian</option></select>
+            <div class="dd-editor"></div>
+            <div class="err">This is a required question</div>
+            <div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div>
+          </div>
+
+        <div class="q" data-type="text"><span class="q-label" data-edit="" contenteditable="false">Email<span class="req"> *</span></span><input type="text" placeholder="Your answer" required=""><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div></div>
+        <div class="sec-next">After this page, go to: <select class="page-next-sel"><option value="__SUBMIT__">Submit form ✅</option><option value="p_egy">Egyptian attendees</option><option value="p_nonegy">Non-Egyptian attendees</option><option value="p_nonegy_aiesec">AIESEC attendees</option><option value="p_nonegy_noaiesec">Non-AIESEC attendees</option></select></div>
+        <div class="sec-tools"><button>+ Short answer</button><button>+ Paragraph</button><button>+ Multiple choice</button><button>+ Checkboxes</button><button>+ File upload</button><button>+ Dropdown</button><button>+ New page</button><button>🗑 Delete this page</button></div>
+      </div>
+    </section>
+
+    <!-- ================= EGYPTIAN PAGE ================= -->
+    <section class="page" data-page-id="p_egy" data-page-name="Egyptian attendees" data-next="__SUBMIT__">
+      <div class="section">
+        <div class="section-head">
+          <h2 data-edit="" contenteditable="false">Egyptian attendees</h2>
+          <p data-edit="" contenteditable="false" style="font-size:19px; font-weight:700;">Ticket Price: 150 EGP</p><div>To be paid InstaPay to 01016333431</div><p></p>
+        </div>
+        <div class="section-body"><div class="q" data-type="text"><span class="q-label" data-edit="" contenteditable="false">Phone Number<span class="req"> *</span></span><input type="text" placeholder="Your answer" required=""><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="file" data-file-required="1"><span class="q-label" data-edit="" contenteditable="false">National ID (Front)<span class="req"> *</span></span><div class="file-box"><label class="file-pick">📎 <span>Choose file</span><input type="file" accept="image/*,.pdf"></label><span class="file-name">No file chosen</span></div><img class="file-prev" alt="" style="display:none"><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="file" data-file-required="1"><span class="q-label" data-edit="" contenteditable="false">National ID (Back)<span class="req"> *</span></span><div class="file-box"><label class="file-pick">📎 <span>Choose file</span><input type="file" accept="image/*,.pdf"></label><span class="file-name">No file chosen</span></div><img class="file-prev" alt="" style="display:none"><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="mc"><span class="q-label" data-edit="" contenteditable="false">Transportation (Additional Fees)<span class="req"> *</span></span><div class="choices"><div class="opt"><input type="radio" name="q_0iz1p" required=""><span class="choice-text" data-edit="" contenteditable="false">Yes</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del">×</button></div><div class="opt"><input type="radio" name="q_0iz1p"><span class="choice-text" data-edit="" contenteditable="false">No</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del">×</button></div></div><div class="err">This is a required question</div><div class="q-tools"><button>+ option</button><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="file" data-file-required="1"><span class="q-label" data-edit="" contenteditable="false">Transaction Screen Shot<span class="req">&nbsp;*</span></span><div class="file-box"><label class="file-pick">📎 <span>Choose file</span><input type="file" accept="image/*,.pdf"></label><span class="file-name">No file chosen</span></div><img class="file-prev" alt="" style="display:none"><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="mc"><span class="q-label" data-edit="" contenteditable="false">How did you hear about the event?<span class="req"> *</span></span><div class="choices"><div class="opt"><input type="radio" name="q_y32wg" required=""><span class="choice-text" data-edit="" contenteditable="false">Social media</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del">×</button></div><div class="opt"><input type="radio" name="q_y32wg"><span class="choice-text" data-edit="" contenteditable="false">Hostel</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del">×</button></div><div class="opt"><input type="radio" name="q_y32wg"><span class="choice-text" data-edit="" contenteditable="false">Friend</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del" title="Delete option">×</button></div></div><div class="err">This is a required question</div><div class="q-tools"><button>+ option</button><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="text"><span class="q-label" data-edit="" contenteditable="false">If friend, tell us his name</span><input type="text" placeholder="Your answer"><div class="err">This is a required question</div><div class="q-tools"><button>Make required</button><button title="Delete question">🗑</button></div></div></div>
+        <div class="sec-next">After this page, go to: <select class="page-next-sel"><option value="__SUBMIT__">Submit form ✅</option><option value="p1">Round 3</option><option value="p_nonegy">Non-Egyptian attendees</option><option value="p_nonegy_aiesec">AIESEC attendees</option><option value="p_nonegy_noaiesec">Non-AIESEC attendees</option></select></div>
+        <div class="sec-tools"><button>+ Short answer</button><button>+ Paragraph</button><button>+ Multiple choice</button><button>+ Checkboxes</button><button>+ File upload</button><button>+ Dropdown</button><button>+ New page</button><button>🗑 Delete this page</button></div>
+      </div>
+    </section>
+
+    <!-- ================= PAYMENT PAGE — EUE ================= -->
+    
+
+    <!-- ================= PAYMENT PAGE — OTHER UNIVERSITIES ================= -->
+    
+
+    <!-- ================= NON-EGYPTIAN PAGE ================= -->
+    <section class="page" data-page-id="p_nonegy" data-page-name="Non-Egyptian attendees" data-next="__SUBMIT__">
+      <div class="section">
+        <div class="section-head">
+          <h2 data-edit="" contenteditable="false">International attendees</h2>
+          <p data-edit="" contenteditable="false" style="font-size:19px; font-weight:700;"><br></p>
+        </div>
+        <div class="section-body"><div class="q" data-type="country"><span class="q-label" data-edit="" contenteditable="false">Country / Nationality<span class="req"> *</span></span><select class="country-picker" required="" style=""><option value="" disabled="" selected="">Choose your country</option><option data-dial="93" data-iso2="af">Afghanistan</option><option data-dial="355" data-iso2="al">Albania</option><option data-dial="213" data-iso2="dz">Algeria</option><option data-dial="376" data-iso2="ad">Andorra</option><option data-dial="244" data-iso2="ao">Angola</option><option data-dial="54" data-iso2="ar">Argentina</option><option data-dial="374" data-iso2="am">Armenia</option><option data-dial="61" data-iso2="au">Australia</option><option data-dial="43" data-iso2="at">Austria</option><option data-dial="994" data-iso2="az">Azerbaijan</option><option data-dial="1242" data-iso2="bs">Bahamas</option><option data-dial="973" data-iso2="bh">Bahrain</option><option data-dial="880" data-iso2="bd">Bangladesh</option><option data-dial="1246" data-iso2="bb">Barbados</option><option data-dial="375" data-iso2="by">Belarus</option><option data-dial="32" data-iso2="be">Belgium</option><option data-dial="501" data-iso2="bz">Belize</option><option data-dial="229" data-iso2="bj">Benin</option><option data-dial="975" data-iso2="bt">Bhutan</option><option data-dial="591" data-iso2="bo">Bolivia</option><option data-dial="387" data-iso2="ba">Bosnia and Herzegovina</option><option data-dial="267" data-iso2="bw">Botswana</option><option data-dial="55" data-iso2="br">Brazil</option><option data-dial="673" data-iso2="bn">Brunei</option><option data-dial="359" data-iso2="bg">Bulgaria</option><option data-dial="226" data-iso2="bf">Burkina Faso</option><option data-dial="257" data-iso2="bi">Burundi</option><option data-dial="855" data-iso2="kh">Cambodia</option><option data-dial="237" data-iso2="cm">Cameroon</option><option data-dial="1" data-iso2="ca">Canada</option><option data-dial="238" data-iso2="cv">Cape Verde</option><option data-dial="236" data-iso2="cf">Central African Republic</option><option data-dial="235" data-iso2="td">Chad</option><option data-dial="56" data-iso2="cl">Chile</option><option data-dial="86" data-iso2="cn">China</option><option data-dial="57" data-iso2="co">Colombia</option><option data-dial="269" data-iso2="km">Comoros</option><option data-dial="243" data-iso2="cd">Congo (DRC)</option><option data-dial="242" data-iso2="cg">Congo (Republic)</option><option data-dial="506" data-iso2="cr">Costa Rica</option><option data-dial="385" data-iso2="hr">Croatia</option><option data-dial="53" data-iso2="cu">Cuba</option><option data-dial="357" data-iso2="cy">Cyprus</option><option data-dial="420" data-iso2="cz">Czech Republic</option><option data-dial="45" data-iso2="dk">Denmark</option><option data-dial="253" data-iso2="dj">Djibouti</option><option data-dial="1767" data-iso2="dm">Dominica</option><option data-dial="1809" data-iso2="do">Dominican Republic</option><option data-dial="593" data-iso2="ec">Ecuador</option><option data-dial="20" data-iso2="eg">Egypt</option><option data-dial="503" data-iso2="sv">El Salvador</option><option data-dial="240" data-iso2="gq">Equatorial Guinea</option><option data-dial="291" data-iso2="er">Eritrea</option><option data-dial="372" data-iso2="ee">Estonia</option><option data-dial="268" data-iso2="sz">Eswatini</option><option data-dial="251" data-iso2="et">Ethiopia</option><option data-dial="679" data-iso2="fj">Fiji</option><option data-dial="358" data-iso2="fi">Finland</option><option data-dial="33" data-iso2="fr">France</option><option data-dial="241" data-iso2="ga">Gabon</option><option data-dial="220" data-iso2="gm">Gambia</option><option data-dial="995" data-iso2="ge">Georgia</option><option data-dial="49" data-iso2="de">Germany</option><option data-dial="233" data-iso2="gh">Ghana</option><option data-dial="30" data-iso2="gr">Greece</option><option data-dial="1473" data-iso2="gd">Grenada</option><option data-dial="502" data-iso2="gt">Guatemala</option><option data-dial="224" data-iso2="gn">Guinea</option><option data-dial="245" data-iso2="gw">Guinea-Bissau</option><option data-dial="592" data-iso2="gy">Guyana</option><option data-dial="509" data-iso2="ht">Haiti</option><option data-dial="504" data-iso2="hn">Honduras</option><option data-dial="36" data-iso2="hu">Hungary</option><option data-dial="354" data-iso2="is">Iceland</option><option data-dial="91" data-iso2="in">India</option><option data-dial="62" data-iso2="id">Indonesia</option><option data-dial="98" data-iso2="ir">Iran</option><option data-dial="964" data-iso2="iq">Iraq</option><option data-dial="353" data-iso2="ie">Ireland</option><option data-dial="972" data-iso2="il">Israel</option><option data-dial="39" data-iso2="it">Italy</option><option data-dial="225" data-iso2="ci">Ivory Coast</option><option data-dial="1876" data-iso2="jm">Jamaica</option><option data-dial="81" data-iso2="jp">Japan</option><option data-dial="962" data-iso2="jo">Jordan</option><option data-dial="7" data-iso2="kz">Kazakhstan</option><option data-dial="254" data-iso2="ke">Kenya</option><option data-dial="686" data-iso2="ki">Kiribati</option><option data-dial="383" data-iso2="xk">Kosovo</option><option data-dial="965" data-iso2="kw">Kuwait</option><option data-dial="996" data-iso2="kg">Kyrgyzstan</option><option data-dial="856" data-iso2="la">Laos</option><option data-dial="371" data-iso2="lv">Latvia</option><option data-dial="961" data-iso2="lb">Lebanon</option><option data-dial="266" data-iso2="ls">Lesotho</option><option data-dial="231" data-iso2="lr">Liberia</option><option data-dial="218" data-iso2="ly">Libya</option><option data-dial="423" data-iso2="li">Liechtenstein</option><option data-dial="370" data-iso2="lt">Lithuania</option><option data-dial="352" data-iso2="lu">Luxembourg</option><option data-dial="261" data-iso2="mg">Madagascar</option><option data-dial="265" data-iso2="mw">Malawi</option><option data-dial="60" data-iso2="my">Malaysia</option><option data-dial="960" data-iso2="mv">Maldives</option><option data-dial="223" data-iso2="ml">Mali</option><option data-dial="356" data-iso2="mt">Malta</option><option data-dial="692" data-iso2="mh">Marshall Islands</option><option data-dial="222" data-iso2="mr">Mauritania</option><option data-dial="230" data-iso2="mu">Mauritius</option><option data-dial="52" data-iso2="mx">Mexico</option><option data-dial="691" data-iso2="fm">Micronesia</option><option data-dial="373" data-iso2="md">Moldova</option><option data-dial="377" data-iso2="mc">Monaco</option><option data-dial="976" data-iso2="mn">Mongolia</option><option data-dial="382" data-iso2="me">Montenegro</option><option data-dial="212" data-iso2="ma">Morocco</option><option data-dial="258" data-iso2="mz">Mozambique</option><option data-dial="95" data-iso2="mm">Myanmar</option><option data-dial="264" data-iso2="na">Namibia</option><option data-dial="674" data-iso2="nr">Nauru</option><option data-dial="977" data-iso2="np">Nepal</option><option data-dial="31" data-iso2="nl">Netherlands</option><option data-dial="64" data-iso2="nz">New Zealand</option><option data-dial="505" data-iso2="ni">Nicaragua</option><option data-dial="227" data-iso2="ne">Niger</option><option data-dial="234" data-iso2="ng">Nigeria</option><option data-dial="850" data-iso2="kp">North Korea</option><option data-dial="389" data-iso2="mk">North Macedonia</option><option data-dial="47" data-iso2="no">Norway</option><option data-dial="968" data-iso2="om">Oman</option><option data-dial="92" data-iso2="pk">Pakistan</option><option data-dial="680" data-iso2="pw">Palau</option><option data-dial="970" data-iso2="ps">Palestine</option><option data-dial="507" data-iso2="pa">Panama</option><option data-dial="675" data-iso2="pg">Papua New Guinea</option><option data-dial="595" data-iso2="py">Paraguay</option><option data-dial="51" data-iso2="pe">Peru</option><option data-dial="63" data-iso2="ph">Philippines</option><option data-dial="48" data-iso2="pl">Poland</option><option data-dial="351" data-iso2="pt">Portugal</option><option data-dial="974" data-iso2="qa">Qatar</option><option data-dial="40" data-iso2="ro">Romania</option><option data-dial="7" data-iso2="ru">Russia</option><option data-dial="250" data-iso2="rw">Rwanda</option><option data-dial="1869" data-iso2="kn">Saint Kitts and Nevis</option><option data-dial="1758" data-iso2="lc">Saint Lucia</option><option data-dial="1784" data-iso2="vc">Saint Vincent and the Grenadines</option><option data-dial="685" data-iso2="ws">Samoa</option><option data-dial="378" data-iso2="sm">San Marino</option><option data-dial="239" data-iso2="st">Sao Tome and Principe</option><option data-dial="966" data-iso2="sa">Saudi Arabia</option><option data-dial="221" data-iso2="sn">Senegal</option><option data-dial="381" data-iso2="rs">Serbia</option><option data-dial="248" data-iso2="sc">Seychelles</option><option data-dial="232" data-iso2="sl">Sierra Leone</option><option data-dial="65" data-iso2="sg">Singapore</option><option data-dial="421" data-iso2="sk">Slovakia</option><option data-dial="386" data-iso2="si">Slovenia</option><option data-dial="677" data-iso2="sb">Solomon Islands</option><option data-dial="252" data-iso2="so">Somalia</option><option data-dial="27" data-iso2="za">South Africa</option><option data-dial="82" data-iso2="kr">South Korea</option><option data-dial="211" data-iso2="ss">South Sudan</option><option data-dial="34" data-iso2="es">Spain</option><option data-dial="94" data-iso2="lk">Sri Lanka</option><option data-dial="249" data-iso2="sd">Sudan</option><option data-dial="597" data-iso2="sr">Suriname</option><option data-dial="46" data-iso2="se">Sweden</option><option data-dial="41" data-iso2="ch">Switzerland</option><option data-dial="963" data-iso2="sy">Syria</option><option data-dial="886" data-iso2="tw">Taiwan</option><option data-dial="992" data-iso2="tj">Tajikistan</option><option data-dial="255" data-iso2="tz">Tanzania</option><option data-dial="66" data-iso2="th">Thailand</option><option data-dial="670" data-iso2="tl">Timor-Leste</option><option data-dial="228" data-iso2="tg">Togo</option><option data-dial="676" data-iso2="to">Tonga</option><option data-dial="1868" data-iso2="tt">Trinidad and Tobago</option><option data-dial="216" data-iso2="tn">Tunisia</option><option data-dial="90" data-iso2="tr">Turkey</option><option data-dial="993" data-iso2="tm">Turkmenistan</option><option data-dial="688" data-iso2="tv">Tuvalu</option><option data-dial="256" data-iso2="ug">Uganda</option><option data-dial="380" data-iso2="ua">Ukraine</option><option data-dial="971" data-iso2="ae">United Arab Emirates</option><option data-dial="44" data-iso2="gb">United Kingdom</option><option data-dial="1" data-iso2="us">United States</option><option data-dial="598" data-iso2="uy">Uruguay</option><option data-dial="998" data-iso2="uz">Uzbekistan</option><option data-dial="678" data-iso2="vu">Vanuatu</option><option data-dial="39" data-iso2="va">Vatican City</option><option data-dial="58" data-iso2="ve">Venezuela</option><option data-dial="84" data-iso2="vn">Vietnam</option><option data-dial="967" data-iso2="ye">Yemen</option><option data-dial="260" data-iso2="zm">Zambia</option><option data-dial="263" data-iso2="zw">Zimbabwe</option></select><span class="country-hint">This sets the country code on your phone number below.</span><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="text"><span class="q-label" data-edit="" contenteditable="false">Phone Number<span class="req"> *</span></span><input type="text" placeholder="Your answer" required="" data-role="phone-number"><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="file" data-file-required="1"><span class="q-label" data-edit="" contenteditable="false">Passport (Front)<span class="req"> *</span></span><div class="file-box"><label class="file-pick">📎 <span>Choose file</span><input type="file" accept="image/*,.pdf"></label><span class="file-name">No file chosen</span></div><img class="file-prev" alt="" style="display:none"><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="file" data-file-required="1"><span class="q-label" data-edit="" contenteditable="false">Passport (Back)<span class="req"> *</span></span><div class="file-box"><label class="file-pick">📎 <span>Choose file</span><input type="file" accept="image/*,.pdf"></label><span class="file-name">No file chosen</span></div><img class="file-prev" alt="" style="display:none"><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="mc"><span class="q-label" data-edit="" contenteditable="false">Transportation (Additional Fees)<span class="req"> *</span></span><div class="choices"><div class="opt"><input type="radio" name="q_64502" required=""><span class="choice-text" data-edit="" contenteditable="false">Yes</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del">×</button></div><div class="opt"><input type="radio" name="q_64502"><span class="choice-text" data-edit="" contenteditable="false">No</span><select class="opt-goto"><option value="">→ default next page</option><option value="__SUBMIT__">→ Submit form ✅</option><option value="p1">→ Round 3</option><option value="p_egy">→ Egyptian attendees</option><option value="p_nonegy">→ Non-Egyptian attendees</option><option value="p_nonegy_aiesec">→ AIESEC attendees</option><option value="p_nonegy_noaiesec">→ Non-AIESEC attendees</option></select><button class="opt-del">×</button></div></div><div class="err">This is a required question</div><div class="q-tools"><button>+ option</button><button>Make optional</button><button title="Delete question">🗑</button></div></div><div class="q" data-type="dd" data-qid="aiesec"><span class="q-label" data-edit="" contenteditable="false">Are you attending with AIESEC?<span class="req"> *</span></span><select class="dd-live" required=""><option value="" disabled="" selected="">Choose</option><option data-goto="p_nonegy_aiesec">Yes, with AIESEC</option><option data-goto="p_nonegy_noaiesec">No, not with AIESEC</option></select><div class="dd-editor"></div><div class="err">This is a required question</div><div class="q-tools"><button>Make optional</button><button title="Delete question">🗑</button></div></div></div>
+        <div class="sec-next">After this page, go to: <select class="page-next-sel"><option value="__SUBMIT__">Submit form ✅</option><option value="p1">Round 3</option><option value="p_egy">Egyptian attendees</option><option value="p_nonegy_aiesec">AIESEC attendees</option><option value="p_nonegy_noaiesec">Non-AIESEC attendees</option></select></div>
+        <div class="sec-tools"><button>+ Short answer</button><button>+ Paragraph</button><button>+ Multiple choice</button><button>+ Checkboxes</button><button>+ File upload</button><button>+ Dropdown</button><button>+ New page</button><button>🗑 Delete this page</button></div>
+      </div>
+    </section>
+
+    <!-- ================= AIESEC ATTENDEES PAGE ================= -->
+    <section class="page" data-page-id="p_nonegy_aiesec" data-page-name="AIESEC attendees" data-next="__SUBMIT__">
+      <div class="section">
+        <div class="section-head">
+          <h2 data-edit="" contenteditable="false">AIESEC Attendees</h2>
+          <p data-edit="" contenteditable="false" style="font-size:19px; font-weight:700;">Ticket Price: Free</p>
+        </div>
+        <div class="section-body"></div>
+        <div class="sec-next">After this page, go to: <select class="page-next-sel"><option value="__SUBMIT__">Submit form ✅</option><option value="p1">Round 3</option><option value="p_egy">Egyptian attendees</option><option value="p_nonegy">Non-Egyptian attendees</option><option value="p_nonegy_noaiesec">Non-AIESEC attendees</option></select></div>
+        <div class="sec-tools"><button>+ Short answer</button><button>+ Paragraph</button><button>+ Multiple choice</button><button>+ Checkboxes</button><button>+ File upload</button><button>+ Dropdown</button><button>+ New page</button><button>🗑 Delete this page</button></div>
+      </div>
+    </section>
+
+    <!-- ================= NON-AIESEC ATTENDEES PAGE ================= -->
+    <section class="page" data-page-id="p_nonegy_noaiesec" data-page-name="Non-AIESEC attendees" data-next="__SUBMIT__">
+      <div class="section">
+        <div class="section-head">
+          <h2 data-edit="" contenteditable="false">Non-AIESEC Attendees</h2>
+          <p data-edit="" contenteditable="false" style="font-size:19px; font-weight:700;">Ticket Price: 5$</p><div>To be paid on door</div><p></p>
+        </div>
+        <div class="section-body"></div>
+        <div class="sec-next">After this page, go to: <select class="page-next-sel"><option value="__SUBMIT__">Submit form ✅</option><option value="p1">Round 3</option><option value="p_egy">Egyptian attendees</option><option value="p_nonegy">Non-Egyptian attendees</option><option value="p_nonegy_aiesec">AIESEC attendees</option></select></div>
+        <div class="sec-tools"><button>+ Short answer</button><button>+ Paragraph</button><button>+ Multiple choice</button><button>+ Checkboxes</button><button>+ File upload</button><button>+ Dropdown</button><button>+ New page</button><button>🗑 Delete this page</button></div>
+      </div>
+    </section>
+
+    <div class="nav-row">
+      <div class="nav-left">
+        <button class="btn ghost" id="backBtn" style="display: none;">Back</button>
+        <button class="btn" id="nextBtn">Next <svg class="ball-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="currentColor" d="M12 8.2l3.6 2.6-1.4 4.2h-4.4l-1.4-4.2z"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="12" y1="8.2" x2="12" y2="2.6"/><line x1="15.6" y1="10.8" x2="20.9" y2="9.1"/><line x1="14.2" y1="15" x2="17.5" y2="19.4"/><line x1="9.8" y1="15" x2="6.5" y2="19.4"/><line x1="8.4" y1="10.8" x2="3.1" y2="9.1"/></g></svg></button>
+      </div>
+      <button class="clear-link" id="clearBtn">Clear form</button>
+    </div>
+    <div class="progress" id="progress">Page 1 of 5</div>
+  </main>
+
+  <div id="thanksPage" class="wrap">
+    <div class="section">
+      <h2 data-edit="" contenteditable="false">You're on the list! ⚽</h2>
+      <p data-edit="" contenteditable="false">See you on 14 Aug, 3:00 pm — get lost in the vibes.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+  const SUBMIT='__SUBMIT__';
+  const BALL_ICO='<svg class=\'ball-ico\' viewBox=\'0 0 24 24\' aria-hidden=\'true\'><circle cx=\'12\' cy=\'12\' r=\'10\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.8\'/><path fill=\'currentColor\' d=\'M12 8.2l3.6 2.6-1.4 4.2h-4.4l-1.4-4.2z\'/><g stroke=\'currentColor\' stroke-width=\'1.5\' stroke-linecap=\'round\'><line x1=\'12\' y1=\'8.2\' x2=\'12\' y2=\'2.6\'/><line x1=\'15.6\' y1=\'10.8\' x2=\'20.9\' y2=\'9.1\'/><line x1=\'14.2\' y1=\'15\' x2=\'17.5\' y2=\'19.4\'/><line x1=\'9.8\' y1=\'15\' x2=\'6.5\' y2=\'19.4\'/><line x1=\'8.4\' y1=\'10.8\' x2=\'3.1\' y2=\'9.1\'/></g></svg>';
+  let editMode=false, history=[];
+
+  /* ============ pages ============ */
+  const pages=()=> $$('.page[data-page-id]');
+  const currentPage=()=> $$('.page.active[data-page-id]')[0];
+  function pageList(){ return pages().map(p=>({id:p.dataset.pageId,name:p.dataset.pageName||p.dataset.pageId})); }
+
+  function refreshRouteSelectors(){
+    const opts=[{id:SUBMIT,name:'Submit form ✅'}].concat(pageList());
+    pages().forEach(p=>{
+      const sel=p.querySelector('.page-next-sel'); if(!sel) return;
+      sel.innerHTML=opts.filter(o=>o.id!==p.dataset.pageId)
+        .map(o=>'<option value="'+o.id+'">'+o.name+'</option>').join('');
+      sel.value=p.dataset.next||SUBMIT;
+      sel.onchange=()=>p.dataset.next=sel.value;
+    });
+    $$('.choices .opt-goto, .dd-editor .opt-goto').forEach(sel=>{
+      const cur=sel.dataset.goto||'';
+      sel.innerHTML='<option value="">→ default next page</option>'+
+        opts.map(o=>'<option value="'+o.id+'">→ '+o.name+'</option>').join('');
+      sel.value=cur;
+      sel.onchange=()=>{ sel.dataset.goto=sel.value; };
+    });
+  }
+
+  function showPage(id){
+    pages().forEach(p=>p.classList.toggle('active',p.dataset.pageId===id));
+    $('#backBtn').style.display = history.length? 'inline-block':'none';
+    const p=currentPage();
+    $('#nextBtn').innerHTML=((p && p.dataset.next===SUBMIT && !hasBranch(p))?'Submit ':'Next ')+BALL_ICO;
+    updateProgress();
+    window.scrollTo({top:0});
+  }
+  function hasBranch(p){
+    return !!p.querySelector('.choices .opt-goto[data-goto], select.dd-live option[data-goto]');
+  }
+  function updateProgress(){
+    const list=pages(); const idx=list.indexOf(currentPage());
+    $('#progress').textContent='Page '+(idx+1)+' of '+list.length;
+  }
+
+
+  /* ============ file uploads ============ */
+  const MAX_DIM=1600, JPEG_Q=0.85, MAX_PDF_MB=8;
+  document.addEventListener('change',e=>{
+    const inp=e.target;
+    if(!(inp instanceof HTMLInputElement) || inp.type!=='file') return;
+    const q=inp.closest('.q'); if(!q) return;
+    const f=inp.files[0]; if(!f) return;
+    const nameEl=q.querySelector('.file-name'), prev=q.querySelector('.file-prev');
+    if(f.type==='application/pdf'){
+      if(f.size>MAX_PDF_MB*1024*1024){ toast('PDF too large — max '+MAX_PDF_MB+'MB'); inp.value=''; return; }
+      const r=new FileReader();
+      r.onload=ev=>{ q._file={name:f.name,mimeType:f.type,data:ev.target.result.split(',')[1]};
+        nameEl.textContent=f.name; prev.style.display='none'; q.classList.remove('invalid'); };
+      r.readAsDataURL(f);
+      return;
+    }
+    if(!f.type.startsWith('image/')){ toast('Please upload a photo or PDF'); inp.value=''; return; }
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(Math.max(w,h)>MAX_DIM){ const s=MAX_DIM/Math.max(w,h); w=Math.round(w*s); h=Math.round(h*s); }
+      const c=document.createElement('canvas'); c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      const durl=c.toDataURL('image/jpeg',JPEG_Q);
+      q._file={name:f.name.replace(/\.[^.]+$/,'')+'.jpg',mimeType:'image/jpeg',data:durl.split(',')[1]};
+      nameEl.textContent=f.name;
+      prev.src=durl; prev.style.display='block';
+      q.classList.remove('invalid');
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror=()=>{ toast('Could not read that image'); inp.value=''; };
+    img.src=URL.createObjectURL(f);
+  });
+
+
+  /* ============ country -> phone country-code autofill ============ */
+  document.addEventListener('change', e=>{
+    const sel=e.target;
+    if(!(sel instanceof HTMLSelectElement) || !sel.classList.contains('country-picker')) return;
+    const opt=sel.options[sel.selectedIndex];
+    const dial=opt && opt.dataset.dial;
+    if(!dial) return;
+    const page=sel.closest('.page'); if(!page) return;
+    const phone=page.querySelector('input[data-role="phone-number"]'); if(!phone) return;
+    const stripped=phone.value.replace(/^\+\d{1,4}\s*/,'');
+    phone.value='+'+dial+' '+stripped;
+    const iso=opt.dataset.iso2;
+    if(phone._flagImg && iso){
+      phone._flagImg.src='https://flagcdn.com/24x18/'+iso+'.png';
+      phone._flagImg.classList.add('shown');
+      phone.classList.add('has-flag');
+    }
+    phone.focus();
+    const len=phone.value.length; phone.setSelectionRange(len,len);
+  });
+
+  /* ============ validation ============ */
+  function validate(page){
+    let ok=true;
+    page.querySelectorAll('.q').forEach(q=>{
+      q.classList.remove('invalid');
+      const reqInputs=q.querySelectorAll('[required]');
+      if(!reqInputs.length && !(q.dataset.type==='file' && q.dataset.fileRequired==='1')) return;
+      let filled=true;
+      if(q.dataset.type==='mc'){ filled=!!q.querySelector('input[type=radio]:checked'); }
+      else if(q.dataset.type==='cb'){ filled=!!q.querySelector('input[type=checkbox]:checked'); }
+      else if(q.dataset.type==='dd'){ const s=q.querySelector('select.dd-live'); filled=s.selectedIndex>0; }
+      else if(q.dataset.type==='country'){ const s=q.querySelector('select.country-picker'); filled=s.selectedIndex>0; }
+      else if(q.dataset.type==='file'){ filled=!!q._file; }
+      else { reqInputs.forEach(i=>{ if(!i.value) filled=false; }); }
+      if(!filled){ ok=false; q.classList.add('invalid'); }
+    });
+    if(!ok){ const bad=page.querySelector('.q.invalid'); bad&&bad.scrollIntoView({block:'center',behavior:'smooth'}); }
+    return ok;
+  }
+
+  /* ============ routing ============ */
+  function resolveNext(page){
+    let target=page.dataset.next||SUBMIT;
+    page.querySelectorAll('.q').forEach(q=>{
+      if(q.dataset.type==='mc'){
+        const checked=q.querySelector('input[type=radio]:checked');
+        if(checked){
+          const g=checked.closest('.opt').querySelector('.opt-goto');
+          if(g && g.dataset.goto) target=g.dataset.goto;
+        }
+      }
+      if(q.dataset.type==='dd'){
+        const sel=q.querySelector('select.dd-live');
+        if(sel && sel.selectedIndex>0){
+          const o=sel.options[sel.selectedIndex];
+          if(o.dataset.goto) target=o.dataset.goto;
+        }
+      }
+      if((q.dataset.type==='text'||q.dataset.type==='para') && q.dataset.branchMatch && q.dataset.branchGoto){
+        const i=q.querySelector('input,textarea');
+        if(i && i.value){
+          const esc=q.dataset.branchMatch.trim().toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+          if(new RegExp('\\b'+esc+'\\b').test(i.value.toLowerCase())) target=q.dataset.branchGoto;
+        }
+      }
+    });
+    return target;
+  }
+
+  let submitting=false;
+  function setSubmitting(on){
+    submitting=on;
+    const b=$('#nextBtn');
+    b.disabled=on;
+    b.style.opacity=on?'0.65':'';
+    b.style.cursor=on?'default':'';
+    if(on){b.textContent='Submitting…';}else{b.innerHTML='Next '+BALL_ICO;}
+  }
+
+  $('#nextBtn').addEventListener('click',()=>{
+    if(editMode){ toast('Turn off Edit mode to test the form'); return; }
+    if(submitting) return; // already sending — ignore extra clicks/taps
+    const p=currentPage();
+    if(!validate(p)) return;
+    const target=resolveNext(p);
+    if(target===SUBMIT){ setSubmitting(true); submitForm(); return; }
+    if(!$$('.page[data-page-id="'+target+'"]').length){ toast('That page no longer exists — fix routing in Edit mode'); return; }
+    history.push(p.dataset.pageId);
+    showPage(target);
+  });
+  $('#backBtn').addEventListener('click',()=>{ const prev=history.pop(); if(prev) showPage(prev); });
+  $('#clearBtn').addEventListener('click',()=>{
+    $$('#formRoot input[type=text],#formRoot input[type=email],#formRoot input[type=tel],#formRoot textarea').forEach(i=>i.value='');
+    $$('#formRoot input[type=radio],#formRoot input[type=checkbox]').forEach(i=>i.checked=false);
+    $$('#formRoot select.dd-live').forEach(s=>s.selectedIndex=0);
+    $$('#formRoot select.country-picker').forEach(s=>{ s.selectedIndex=0; s._comboSync&&s._comboSync(); });
+    $$('#formRoot input[data-role="phone-number"]').forEach(p=>{ if(p._flagImg){ p._flagImg.classList.remove('shown'); } p.classList.remove('has-flag'); });
+    $$('#formRoot .q[data-type=file]').forEach(q=>{ delete q._file;
+      const n=q.querySelector('.file-name'); if(n) n.textContent='No file chosen';
+      const p=q.querySelector('.file-prev'); if(p){p.style.display='none'; p.src='';}
+      const i=q.querySelector('input[type=file]'); if(i) i.value=''; });
+    history=[]; showPage(pages()[0].dataset.pageId);
+  });
+
+  /* ============ collect + send to Google Sheet ============ */
+  function collectAnswers(){
+    const data={_submitted_at:new Date().toISOString()};
+    $$('#formRoot .q').forEach(q=>{
+      const label=(q.querySelector('.q-label')?.textContent||q.dataset.qid||'question').replace(/\s*\*\s*$/,'').trim();
+      let val='';
+      if(q.dataset.type==='mc'){
+        const c=q.querySelector('input[type=radio]:checked');
+        val=c? c.closest('.opt').querySelector('.choice-text').textContent.trim():'';
+      } else if(q.dataset.type==='cb'){
+        val=Array.from(q.querySelectorAll('input[type=checkbox]:checked')).map(c=>c.closest('.opt').querySelector('.choice-text').textContent.trim()).join(', ');
+      } else if(q.dataset.type==='dd'){
+        const s=q.querySelector('select.dd-live');
+        val=(s && s.selectedIndex>0)? s.options[s.selectedIndex].text:'';
+      } else if(q.dataset.type==='country'){
+        const s=q.querySelector('select.country-picker');
+        val=(s && s.selectedIndex>0)? s.options[s.selectedIndex].text:'';
+      } else if(q.dataset.type==='file'){
+        if(q._file){ data._files=data._files||[]; data._files.push({field:label,name:q._file.name,mimeType:q._file.mimeType,data:q._file.data}); val=q._file.name; }
+      } else {
+        const i=q.querySelector('input,textarea'); val=i? i.value:'';
+      }
+      data[label]=val;
+    });
+    return data;
+  }
+
+  function submitForm(){
+    const url=(document.body.dataset.sheetUrl||'').trim();
+    const data=collectAnswers();
+    const finish=()=>{
+      $('#formRoot').style.display='none';
+      document.querySelector('.hero').scrollIntoView();
+      $('#thanksPage').style.display='block';
+    };
+    if(url){
+      fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)})
+        .then(finish)
+        .catch(()=>{ toast('Could not reach the Google Sheet — response NOT saved'); setSubmitting(false); });
+    } else { finish(); }
+  }
+
+  /* ============ edit mode ============ */
+  function setEdit(on){
+    editMode=on;
+    document.body.classList.toggle('edit-mode',on);
+    $$('[data-edit]').forEach(el=>el.setAttribute('contenteditable',on?'true':'false'));
+    $('#editToggle').textContent='✏️ Edit mode: '+(on?'ON':'OFF');
+    $('#editToggle').classList.toggle('active',on);
+    if(on){ pages().forEach(p=>p.classList.add('active')); $$('#formRoot .q').forEach(buildQTools); $$('.sec-tools').forEach(buildSecTools); $$('.q[data-type=dd]').forEach(openDDEditor); $$('.q[data-type=text],.q[data-type=para]').forEach(openTxtBranch); refreshRouteSelectors(); }
+    else{ $$('.q[data-type=dd]').forEach(closeDDEditor); $$('.q[data-type=text],.q[data-type=para]').forEach(closeTxtBranch); history=[]; showPage(pages()[0].dataset.pageId); }
+  }
+  const _et=$('#editToggle'); if(_et) _et.addEventListener('click',()=>setEdit(!editMode));
+
+  /* --- dropdown option editor --- */
+  function openDDEditor(q){
+    const sel=q.querySelector('select.dd-live'), ed=q.querySelector('.dd-editor');
+    ed.innerHTML='';
+    Array.from(sel.options).forEach((o,i)=>{
+      if(i===0) return;
+      ed.appendChild(ddRow(o.text,o.dataset.goto||''));
+    });
+    const add=document.createElement('button');
+    add.className='add-opt-btn'; add.textContent='+ Add option';
+    add.onclick=()=>ed.insertBefore(ddRow('New option',''),add);
+    ed.appendChild(add);
+  }
+  function ddRow(text,goto){
+    const row=document.createElement('div'); row.className='opt-row';
+    row.innerHTML='<input class="txt" value=""><select class="opt-goto" style="display:inline-block"></select><button class="opt-del" style="display:inline-block" title="Delete option">×</button>';
+    row.querySelector('.txt').value=text;
+    const g=row.querySelector('.opt-goto'); g.dataset.goto=goto;
+    row.querySelector('.opt-del').onclick=()=>row.remove();
+    setTimeout(refreshRouteSelectors,0);
+    return row;
+  }
+  function closeDDEditor(q){
+    const sel=q.querySelector('select.dd-live'), ed=q.querySelector('.dd-editor');
+    if(!ed.children.length) return;
+    const keep=sel.required;
+    sel.innerHTML='<option value="" disabled selected>Choose</option>';
+    ed.querySelectorAll('.opt-row').forEach(r=>{
+      const o=document.createElement('option');
+      o.text=r.querySelector('.txt').value.trim()||'Option';
+      const g=r.querySelector('.opt-goto').dataset.goto;
+      if(g) o.dataset.goto=g;
+      sel.appendChild(o);
+    });
+    sel.required=keep; ed.innerHTML='';
+  }
+
+  /* --- text answer branching (hidden from respondents) --- */
+  function openTxtBranch(q){
+    if(q.querySelector('.txt-branch')) return;
+    const row=document.createElement('div'); row.className='txt-branch';
+    row.innerHTML='If answer contains <input class="txt" placeholder="e.g. eue"> <select class="opt-goto" style="display:inline-block"></select>';
+    row.querySelector('.txt').value=q.dataset.branchMatch||'';
+    row.querySelector('.opt-goto').dataset.goto=q.dataset.branchGoto||'';
+    q.appendChild(row);
+    setTimeout(refreshRouteSelectors,0);
+  }
+  function closeTxtBranch(q){
+    const row=q.querySelector('.txt-branch'); if(!row) return;
+    const match=row.querySelector('.txt').value.trim();
+    const goto=row.querySelector('.opt-goto').dataset.goto||'';
+    if(match && goto){ q.dataset.branchMatch=match; q.dataset.branchGoto=goto; }
+    else{ delete q.dataset.branchMatch; delete q.dataset.branchGoto; }
+    row.remove();
+  }
+
+  /* --- question tools --- */
+  function buildQTools(q){
+    const t=q.querySelector('.q-tools'); if(!t) return;
+    t.innerHTML='';
+    const req=document.createElement('button');
+    const hasReq=!!q.querySelector('.req');
+    req.textContent=hasReq?'Make optional':'Make required';
+    req.onclick=()=>{
+      const label=q.querySelector('.q-label'), star=label.querySelector('.req');
+      if(star){ star.remove(); q.querySelectorAll('input,textarea,select').forEach(i=>i.required=false); delete q.dataset.fileRequired; }
+      else{ const s=document.createElement('span'); s.className='req'; s.textContent=' *'; label.appendChild(s);
+            if(q.dataset.type==='file'){ q.dataset.fileRequired='1'; }
+            else{ const first=q.querySelector('input,textarea,select'); if(first) first.required=true; } }
+      buildQTools(q);
+    };
+    const del=document.createElement('button'); del.textContent='🗑'; del.title='Delete question';
+    del.onclick=()=>q.remove();
+    if(q.dataset.type==='mc'||q.dataset.type==='cb'){
+      const add=document.createElement('button'); add.textContent='+ option';
+      add.onclick=()=>{
+        const box=q.querySelector('.choices');
+        const isR=q.dataset.type==='mc';
+        const name=isR?(box.querySelector('input')?.name||'q_'+Math.random().toString(36).slice(2,7)):'';
+        const d=document.createElement('div'); d.className='opt';
+        d.innerHTML='<input type="'+(isR?'radio':'checkbox')+'" '+(isR?'name="'+name+'"':'')+'><span class="choice-text" data-edit contenteditable="true">New option</span>'+(isR?'<select class="opt-goto"></select>':'')+'<button class="opt-del" title="Delete option">×</button>';
+        d.querySelector('.opt-del').onclick=()=>d.remove();
+        box.appendChild(d); refreshRouteSelectors();
+      };
+      t.append(add);
+    }
+    t.append(req,del);
+    q.querySelectorAll('.opt-del').forEach(b=>b.onclick=()=>{b.closest('.opt,.opt-row').remove();});
+  }
+
+  /* --- section tools --- */
+  const QT={
+    'Short answer':{type:'text',html:'<span class="q-label" data-edit contenteditable="true">New question</span><input type="text" placeholder="Your answer"><div class="err">This is a required question</div><div class="q-tools"></div>'},
+    'Paragraph':{type:'para',html:'<span class="q-label" data-edit contenteditable="true">New question</span><textarea placeholder="Your answer"></textarea><div class="err">This is a required question</div><div class="q-tools"></div>'},
+    'Multiple choice':{type:'mc',html:'<span class="q-label" data-edit contenteditable="true">New question</span><div class="choices"><div class="opt"><input type="radio" name="NR"><span class="choice-text" data-edit contenteditable="true">Option 1</span><select class="opt-goto"></select><button class="opt-del">×</button></div><div class="opt"><input type="radio" name="NR"><span class="choice-text" data-edit contenteditable="true">Option 2</span><select class="opt-goto"></select><button class="opt-del">×</button></div></div><div class="err">This is a required question</div><div class="q-tools"></div>'},
+    'Checkboxes':{type:'cb',html:'<span class="q-label" data-edit contenteditable="true">New question</span><div class="choices"><div class="opt"><input type="checkbox"><span class="choice-text" data-edit contenteditable="true">Option 1</span><button class="opt-del">×</button></div><div class="opt"><input type="checkbox"><span class="choice-text" data-edit contenteditable="true">Option 2</span><button class="opt-del">×</button></div></div><div class="err">This is a required question</div><div class="q-tools"></div>'},
+    'File upload':{type:'file',html:'<span class="q-label" data-edit contenteditable="true">New question</span><div class="file-box"><label class="file-pick">📎 <span>Choose file</span><input type="file" accept="image/*,.pdf"></label><span class="file-name">No file chosen</span></div><img class="file-prev" alt="" style="display:none"><div class="err">This is a required question</div><div class="q-tools"></div>'},
+    'Dropdown':{type:'dd',html:'<span class="q-label" data-edit contenteditable="true">New question</span><select class="dd-live"><option value="" disabled selected>Choose</option><option>Option 1</option><option>Option 2</option></select><div class="dd-editor"></div><div class="err">This is a required question</div><div class="q-tools"></div>'}
+  };
+  function buildSecTools(bar){
+    bar.innerHTML='';
+    Object.keys(QT).forEach(k=>{
+      const b=document.createElement('button'); b.textContent='+ '+k;
+      b.onclick=()=>{
+        const q=document.createElement('div');
+        q.className='q'; q.dataset.type=QT[k].type;
+        q.innerHTML=QT[k].html.replaceAll('NR','q_'+Math.random().toString(36).slice(2,7));
+        bar.closest('.section').querySelector('.section-body').appendChild(q);
+        buildQTools(q);
+        if(q.dataset.type==='dd') openDDEditor(q);
+        refreshRouteSelectors();
+      };
+      bar.appendChild(b);
+    });
+    const addP=document.createElement('button'); addP.textContent='+ New page';
+    addP.onclick=()=>{
+      const id='p_'+Math.random().toString(36).slice(2,7);
+      const s=document.createElement('section');
+      s.className='page active'; s.dataset.pageId=id; s.dataset.pageName='New page'; s.dataset.next=SUBMIT;
+      s.innerHTML='<div class="section"><div class="section-head"><h2 data-edit contenteditable="true">New page</h2><p data-edit contenteditable="true">Page description</p></div><div class="section-body"></div><div class="sec-next">After this page, go to: <select class="page-next-sel"></select></div><div class="sec-tools"></div></div>';
+      bar.closest('.page').after(s);
+      buildSecTools(s.querySelector('.sec-tools'));
+      refreshRouteSelectors();
+      s.querySelector('h2').addEventListener('input',e=>{s.dataset.pageName=e.target.textContent.trim(); refreshRouteSelectors();});
+    };
+    const delP=document.createElement('button'); delP.textContent='🗑 Delete this page';
+    delP.onclick=()=>{
+      if(pages().length<=1){ toast('You need at least one page'); return; }
+      bar.closest('.page').remove(); refreshRouteSelectors();
+    };
+    bar.append(addP,delP);
+  }
+  pages().forEach(s=>{
+    const t=s.querySelector('.section-head h2');
+    if(t) t.addEventListener('input',e=>{s.dataset.pageName=e.target.textContent.trim(); refreshRouteSelectors();});
+  });
+
+  /* ============ images / bg ============ */
+  function fileToDataURL(f,cb){const r=new FileReader();r.onload=e=>cb(e.target.result);r.readAsDataURL(f);}
+  const _bu=$('#bgUpload'); if(_bu) _bu.addEventListener('change',e=>{ if(e.target.files[0]) fileToDataURL(e.target.files[0],u=>document.body.style.setProperty('--bg-image','url("'+u+'")')); });
+  const _hu=$('#headerUpload'); if(_hu) _hu.addEventListener('change',e=>{ if(e.target.files[0]) fileToDataURL(e.target.files[0],u=>$('#headerImg').src=u); });
+  const _bc=$('#bgClear'); if(_bc) _bc.addEventListener('click',()=>document.body.style.setProperty('--bg-image','none'));
+  const _bm=$('#bgMode'); if(_bm) _bm.addEventListener('click',()=>{
+    const f=document.body.classList.toggle('bg-fixed');
+    _bm.textContent='Background: '+(f?'fixed (parallax)':'scrolls with page');
+  });
+
+  /* ============ sheet url ============ */
+  const _su=$('#sheetUrl'); if(_su){ _su.value=document.body.dataset.sheetUrl||'';
+  _su.addEventListener('input',e=>document.body.dataset.sheetUrl=e.target.value.trim()); }
+
+  /* ============ save ============ */
+  function makeClone(){
+    setEdit(false);
+    $$('.country-picker').forEach(teardownCountryCombo);
+    $$('input[data-role="phone-number"]').forEach(teardownPhoneWrap);
+    const clone=document.documentElement.cloneNode(true);
+    $$('.country-picker').forEach(buildCountryCombo);
+    $$('input[data-role="phone-number"]').forEach(wrapPhoneField);
+    const b=clone.querySelector('body');
+    const bg=document.body.style.getPropertyValue('--bg-image');
+    if(bg) b.style.setProperty('--bg-image',bg);
+    if(document.body.classList.contains('bg-fixed')) b.classList.add('bg-fixed');
+    b.dataset.sheetUrl=document.body.dataset.sheetUrl||'';
+    return clone;
+  }
+  function download(clone,filename){
+    const html='<!DOCTYPE html>\n'+clone.outerHTML;
+    const blob=new Blob([html],{type:'text/html'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+  }
+  const _sv=$('#saveHtml'); if(_sv) _sv.addEventListener('click',()=>download(makeClone(),'global-village-form-EDITOR.html'));
+  const _sp=$('#savePublic'); if(_sp) _sp.addEventListener('click',()=>{
+    const clone=makeClone();
+    // strip everything editor-related for visitors
+    clone.querySelectorAll('#panel,#panelToggle,.q-tools,.sec-tools,.sec-next,.dd-editor,.opt-del,.opt-goto').forEach(el=>el.remove());
+    clone.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    download(clone,'register.html');
+    toast('register.html downloaded — upload it next to index.html on your host');
+  });
+
+  const _hp=$('#hidePanel'); if(_hp) _hp.addEventListener('click',()=>{$('#panel').classList.add('hidden');$('#panelToggle').classList.add('show');});
+  const _pt=$('#panelToggle'); if(_pt) _pt.addEventListener('click',()=>{$('#panel').classList.remove('hidden');$('#panelToggle').classList.remove('show');});
+
+  let toastTimer;
+  function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.style.display='none',3200); }
+
+
+  /* ============ flag-icon country combo (built on the hidden select) ============ */
+  function buildCountryCombo(select){
+    if(select._comboBuilt) return; select._comboBuilt=true;
+    select.style.display='none';
+
+    const wrap=document.createElement('div'); wrap.className='country-combo';
+    const btn=document.createElement('button'); btn.type='button'; btn.className='country-combo-btn';
+    btn.innerHTML='<img class="cc-flag" alt=""><span class="cc-label">Choose your country</span><span class="cc-caret">\u25BE</span>';
+    wrap.appendChild(btn);
+    select.parentNode.insertBefore(wrap, select);
+    select._comboWrap=wrap;
+
+    const panel=document.createElement('div'); panel.className='country-combo-panel'; panel.hidden=true;
+    panel.innerHTML='<input type="text" class="country-search" placeholder="Search country...">' +
+      '<ul class="country-list"></ul>';
+    document.body.appendChild(panel);
+    select._comboPanel=panel;
+    const list=panel.querySelector('.country-list');
+    const search=panel.querySelector('.country-search');
+
+    const items=[];
+    Array.from(select.options).forEach((opt,idx)=>{
+      if(idx===0) return; // skip placeholder
+      const li=document.createElement('li');
+      const iso=opt.dataset.iso2||'';
+      li.innerHTML='<img src="https://flagcdn.com/24x18/'+iso+'.png" alt="">'+
+        '<span>'+opt.textContent+'</span>';
+      li.dataset.idx=idx;
+      li.addEventListener('click',()=>choose(idx));
+      list.appendChild(li);
+      items.push({idx, text:opt.textContent.toLowerCase(), li});
+    });
+    const noMatch=document.createElement('li');
+    noMatch.className='no-match'; noMatch.textContent='No countries match'; noMatch.hidden=true;
+    list.appendChild(noMatch);
+
+    function syncButton(){
+      const flag=btn.querySelector('.cc-flag'), label=btn.querySelector('.cc-label');
+      if(select.selectedIndex>0){
+        const opt=select.options[select.selectedIndex];
+        flag.src='https://flagcdn.com/24x18/'+(opt.dataset.iso2||'')+'.png';
+        flag.classList.add('shown');
+        label.textContent=opt.textContent; label.classList.add('filled');
+      } else {
+        flag.classList.remove('shown'); flag.removeAttribute('src');
+        label.textContent='Choose your country'; label.classList.remove('filled');
+      }
+    }
+    select._comboSync=syncButton;
+
+    function choose(idx){
+      select.selectedIndex=idx;
+      syncButton();
+      select.dispatchEvent(new Event('change',{bubbles:true}));
+      close();
+      select.closest('.q')?.classList.remove('invalid');
+    }
+
+    function position(){
+      const r=btn.getBoundingClientRect();
+      panel.style.left=r.left+'px';
+      panel.style.top=(r.bottom+6)+'px';
+      panel.style.width=r.width+'px';
+    }
+    function open_(){
+      position(); panel.hidden=false; btn.classList.add('open');
+      search.value=''; filter();
+      setTimeout(()=>search.focus(),0);
+    }
+    function close(){ panel.hidden=true; btn.classList.remove('open'); }
+    function filter(){
+      const q=search.value.trim().toLowerCase();
+      let any=false;
+      items.forEach(it=>{ const m=!q||it.text.includes(q); it.li.style.display=m?'flex':'none'; if(m) any=true; });
+      noMatch.hidden=any;
+    }
+
+    btn.addEventListener('click',e=>{ e.stopPropagation(); panel.hidden? open_():close(); });
+    search.addEventListener('input',filter);
+    search.addEventListener('keydown',e=>{ if(e.key==='Escape'){ close(); btn.focus(); } });
+    document.addEventListener('click',e=>{ if(!panel.hidden && !panel.contains(e.target) && e.target!==btn) close(); });
+    window.addEventListener('resize',()=>{ if(!panel.hidden) position(); });
+    window.addEventListener('scroll',()=>{ if(!panel.hidden) position(); }, true);
+
+    syncButton();
+  }
+  $$('.country-picker').forEach(buildCountryCombo);
+  /* ============ flag icon inside the phone number field ============ */
+  function wrapPhoneField(input){
+    if(input._phoneWrapped) return; input._phoneWrapped=true;
+    const wrap=document.createElement('div'); wrap.className='phone-field';
+    input.parentNode.insertBefore(wrap, input);
+    const flag=document.createElement('img'); flag.className='phone-flag'; flag.alt='';
+    wrap.appendChild(flag); wrap.appendChild(input);
+    input._flagImg=flag;
+    input._phoneWrap=wrap;
+  }
+  $$('input[data-role="phone-number"]').forEach(wrapPhoneField);
+
+  /* ---- undo the runtime-injected combo/flag UI before exporting, so the saved
+     file always contains the plain original markup and never a baked-in duplicate ---- */
+  function teardownCountryCombo(select){
+    if(!select._comboBuilt) return;
+    if(select._comboWrap && select._comboWrap.parentNode) select._comboWrap.remove();
+    if(select._comboPanel && select._comboPanel.parentNode) select._comboPanel.remove();
+    select.style.display='';
+    delete select._comboBuilt; delete select._comboWrap; delete select._comboPanel; delete select._comboSync;
+  }
+  function teardownPhoneWrap(input){
+    if(!input._phoneWrapped) return;
+    const wrap=input._phoneWrap;
+    if(wrap && wrap.parentNode) wrap.parentNode.insertBefore(input, wrap);
+    if(wrap && wrap.parentNode) wrap.remove();
+    delete input._phoneWrapped; delete input._phoneWrap; delete input._flagImg;
+  }
+
+  refreshRouteSelectors();
+  showPage('p1');
+})();
+</script>
+
+
+</body></html>
